@@ -96,7 +96,8 @@ REGEL 6 – DIAGRAMME
 • Graph zeichnen: 1 BE.
 • Ablesen: Hilfslinien senkrecht und waagrecht zu den Achsen müssen eingezeichnet
   sein: ½ BE für die Hilfslinien, ½ BE für den Wert mit Einheit. In der Musterlösung
-  zeigt das Diagramm die Hilfslinien (Feld "marken").
+  zeigt das Diagramm die Hilfslinien: bei Diagrammen mit Skala im Feld "ablesen"
+  (je Zeile "Rechtswert; Hochwert", z. B. "5; 6"), bei qualitativen im Feld "marken".
 
 REGEL 7 – MUSTERLÖSUNG
 • Fachlich korrekt und vollständig. Sie muss der Prüfung durch die
@@ -159,8 +160,14 @@ Jeder Baustein hat "id" (eindeutig, z. B. "b1"), "typ" und je nach Typ diese Fel
   linien       anzahl, abstand (8, 9 oder 11 mm)
   karo         hoehe (cm)          leer  hoehe (cm)          umbruch  (keine Felder)
   bild         src (Bild als data-URL), breite (%), ausrichtung ("links", "mitte", "rechts")
-  diagramm     siehe TYPEN.diagramm.neu() im Quelltext; nurGraph bzw. nurPunkte true =
-               Graph bzw. Messpunkte nur in der Lösung
+  diagramm     mit Skala: art "quant", x und y je {name, einheit, min, max, schritt},
+               gitter true, unterteilung (Feinraster je Schritt: 1, 2, 4, 5 oder 10),
+               funktionen (eine je Zeile, z. B. "v = 1,2*t | 0..10"; Zeilen ohne Namen,
+               die lückenlos aneinander anschließen, ergeben einen Graphen), punkte
+               ("Rechtswert; Hochwert" je Zeile), ausgleich ("keine", "verbinden",
+               "gerade", "ursprung"), nurGraph bzw. nurPunkte true = nur in der Lösung,
+               ablesen (Hilfslinien der Lösung), breite (%), hoehe (cm), ausrichtung
+               ("mitte"), textDaneben false. Qualitative Diagramme: TYPEN.diagramm.neu().
   Weitere Bausteine (gitter, raetsel, symtab): siehe TYPEN.<typ>.neu() im Quelltext.
 
 Text in html-Feldern: einfaches HTML (<b>, <i>, <u>, <br>, <ul><li>, <ol><li>).
@@ -2474,6 +2481,13 @@ var Diagramm = (function(){
       });
       liste.push(eintrag);
     });
+    // Ein Abschnitt ohne eigenen Namen, der genau dort beginnt, wo der vorige endet, setzt dessen Graphen fort
+    // (gleiche Farbe und Strichart), z. B. Anfahren – gleichförmig – Bremsen im t-v-Diagramm
+    var nr = -1;
+    liste.forEach(function(e, i){
+      var v = liste[i - 1];
+      e.graph = v && !e.name && e.von != null && v.bis != null && Math.abs(e.von - v.bis) < 1e-9 ? v.graph : ++nr;
+    });
     return {liste:liste, fehler:fehler};
   }
 
@@ -2813,8 +2827,9 @@ var Diagramm = (function(){
     // Quantitativ: Funktionen und Messpunkte
     if(quant){
       var g = ['<g clip-path="url(#' + cid + ')">'];
+      var graphen = fkt.liste.length ? fkt.liste[fkt.liste.length - 1].graph + 1 : 0;
       if(zeigeGraph){
-        fkt.liste.forEach(function(f, i){
+        fkt.liste.forEach(function(f){
           var a = f.von != null ? Math.max(xmin, f.von) : xmin, e = f.bis != null ? Math.min(xmax, f.bis) : xmax;
           if(e <= a) return;
           var pfad = '', stift = false, letzter = null, n = 400;
@@ -2828,15 +2843,22 @@ var Diagramm = (function(){
             stift = true; letzter = yv;
             if(q === n || (xv <= xmax && yv >= ymin && yv <= ymax)) f.ende = [px(xv), py(yv)];
           }
-          g.push('<path d="' + pfad + '" fill="none" stroke="' + graphFarbe(i) + '" stroke-width="0.5" stroke-dasharray="' + STRICHE[i % 4] + '" stroke-linejoin="round"/>');
+          g.push('<path d="' + pfad + '" fill="none" stroke="' + graphFarbe(f.graph) + '" stroke-width="0.5" stroke-dasharray="' + STRICHE[f.graph % 4] + '" stroke-linejoin="round"/>');
         });
+      }
+      // Ablesen: Hilfslinien senkrecht und waagrecht zu den Achsen – nur in der Lösungsfassung
+      if(loesung){
+        var hl = punkteLesen(b.ablesen).map(function(p){
+          return 'M' + px(p[0]).toFixed(2) + ' ' + achseY.toFixed(2) + 'V' + py(p[1]).toFixed(2) + 'H' + achseX.toFixed(2);
+        }).join('');
+        if(hl) g.push('<path class="hilfslinien" d="' + hl + '" fill="none" stroke="var(--loesung)" stroke-width="0.4" stroke-dasharray="1.4 0.9"/>');
       }
       var zeigePunkte = !b.nurPunkte || loesung;
       if(pkt.length && zeigeGraph && b.ausgleich !== 'keine'){
         var z = pkt.slice().sort(function(p, q){ return p[0] - q[0]; });
         if(b.ausgleich === 'verbinden'){
           g.push('<path d="' + z.map(function(p, i){ return (i ? 'L' : 'M') + px(p[0]).toFixed(2) + ' ' + py(p[1]).toFixed(2); }).join('') +
-            '" fill="none" stroke="' + graphFarbe(fkt.liste.length) + '" stroke-width="0.45"/>');
+            '" fill="none" stroke="' + graphFarbe(graphen) + '" stroke-width="0.45"/>');
         } else {
           var sxx = 0, sxy = 0, sx1 = 0, sy1 = 0, nn = z.length;
           z.forEach(function(p){ sxx += p[0] * p[0]; sxy += p[0] * p[1]; sx1 += p[0]; sy1 += p[1]; });
@@ -2845,7 +2867,7 @@ var Diagramm = (function(){
           else { var nenn = nn * sxx - sx1 * sx1; m = nenn ? (nn * sxy - sx1 * sy1) / nenn : 0; c = (sy1 - m * sx1) / nn; }
           var xa = b.ausgleich === 'ursprung' ? Math.max(xmin, 0) : xmin;
           g.push('<path d="M' + px(xa).toFixed(2) + ' ' + py(m * xa + c).toFixed(2) + 'L' + px(xmax).toFixed(2) + ' ' + py(m * xmax + c).toFixed(2) +
-            '" fill="none" stroke="' + graphFarbe(fkt.liste.length) + '" stroke-width="0.45"/>');
+            '" fill="none" stroke="' + graphFarbe(graphen) + '" stroke-width="0.45"/>');
         }
       }
       if(zeigePunkte){
@@ -2859,10 +2881,12 @@ var Diagramm = (function(){
       g.push('</g>');
       o.push(g.join(''));
       if(zeigeGraph){
-        fkt.liste.forEach(function(f, i){
-          if(!f.name || !f.ende) return;
-          var ex = Math.min(f.ende[0] - 2.5, X1 - 2.5), ey = Math.max(Y1 + 3, Math.min(Y0 - 1, f.ende[1] - 1.8));
-          o.push('<text x="' + ex.toFixed(2) + '" y="' + ey.toFixed(2) + '" font-size="' + fsk + '" text-anchor="end" fill="' + graphFarbe(i) + '">' + esc(f.name) + '</text>');
+        fkt.liste.forEach(function(f){
+          // Name am Ende des ganzen Graphen, auch wenn er aus mehreren Abschnitten besteht
+          var letzter = fkt.liste.filter(function(x){ return x.graph === f.graph; }).pop(), ende = letzter.ende || f.ende;
+          if(!f.name || !ende) return;
+          var ex = Math.min(ende[0] - 2.5, X1 - 2.5), ey = Math.max(Y1 + 3, Math.min(Y0 - 1, ende[1] - 1.8));
+          o.push('<text x="' + ex.toFixed(2) + '" y="' + ey.toFixed(2) + '" font-size="' + fsk + '" text-anchor="end" fill="' + graphFarbe(f.graph) + '">' + esc(f.name) + '</text>');
         });
       }
     }
@@ -2894,7 +2918,7 @@ TYPEN.diagramm = {
       y:{name:'s', einheit:'m', min:0, max:50, schritt:10},
       unterteilung:2, gitter:true,
       funktionen:'s = 5*t | Körper A', punkte:'', ausgleich:'keine',
-      nurGraph:false, nurPunkte:false,
+      nurGraph:false, nurPunkte:false, ablesen:'',
       breite:60, hoehe:5.5, ausrichtung:'mitte', textDaneben:true, html:'', beschriftungAn:false, beschriftung:''
     };
   },
@@ -3097,7 +3121,8 @@ function diagrammQuantPanel(b, p){
   ta.addEventListener('input', function(){ b.funktionen = ta.value; pruefen(); p.neuZeichnen(); });
   pruefen();
   p.feld('Funktionen (eine pro Zeile)', [ta, fe]);
-  p.hinweis('Schreibweise: <code>s = 5*t</code> oder <code>0,5*9,81*t^2</code>. Optional mit <code>| 0..4</code> einen Bereich und mit <code>| Name</code> eine Beschriftung angeben. Winkelfunktionen rechnen in Grad.');
+  p.hinweis('Schreibweise: <code>s = 5*t</code> oder <code>0,5*9,81*t^2</code>. Optional mit <code>| 0..4</code> einen Bereich und mit <code>| Name</code> eine Beschriftung angeben. '
+    + 'Schließt eine Zeile ohne Namen lückenlos an die vorige an (<code>| 0..10</code>, dann <code>| 10..30</code>), zeichnet der Editor beide als einen Graphen. Winkelfunktionen rechnen in Grad.');
 
   var pt = neu('textarea', {rows:4, spellcheck:'false', placeholder:'0; 0\n1; 4,8\n2; 10,1\n3; 14,9'});
   pt.value = b.punkte;
@@ -3108,6 +3133,10 @@ function diagrammQuantPanel(b, p){
   p.abschnitt('Lösung');
   p.haken('Graphen nur in der Lösungsfassung', 'nurGraph');
   p.haken('Messpunkte nur in der Lösungsfassung', 'nurPunkte');
+  var hl = neu('textarea', {rows:2, spellcheck:'false', placeholder:'5; 6'});
+  hl.value = b.ablesen || '';
+  hl.addEventListener('input', function(){ b.ablesen = hl.value; p.neuZeichnen(); });
+  p.feld('Ablesen: Hilfslinien zu diesen Punkten (Rechtswert; Hochwert), nur in der Lösungsfassung', [hl]);
 }
 
 var MENUE = [
@@ -3778,7 +3807,8 @@ function nurText(html){
 // Beginnt ein Satz mit einem Operator? Steht eine Frage im Text?
 function auftragPruefen(html){
   var t = nurText(html), operator = null;
-  t.split(/[.!?:;]\s+/).some(function(satz){
+  // Satzenden, auch hinter schließenden Anführungszeichen: „… ist.“ Beurteile …
+  t.split(/[.!?:;][“”"»«)]*\s+/).some(function(satz){
     var w = (/^[„"»(]*([A-Za-zÄÖÜäöüß]+)/.exec(satz.trim()) || [])[1];
     var moegliche = ((w && OPERATOREN[w.toLowerCase()]) || []).filter(function(m){
       return m.art !== 'vorlaeufig' || m.eintrag.fach === Z.kopf.fach;
@@ -4044,6 +4074,11 @@ function platzPruefen(){
   });
 }
 
+function istAuftrag(el){
+  var b = el.dataset && blockHolen(el.dataset.id);
+  return !!b && (b.typ === 'aufgabe' || b.typ === 'teilaufgabe' || b.typ === 'ueberschrift');
+}
+
 function gestaltenPlanen(){
   $$('.vollbild, .leer-seite', buehne).forEach(function(x){ x.remove(); });
   var seitenNr = 0;
@@ -4084,8 +4119,13 @@ function gestaltenPlanen(){
     var unten = e.offsetTop + e.offsetHeight - abst;
     if(unten > inhalt.clientHeight + 0.5){
       if(e.previousSibling){
-        zuletzt = e.previousSibling;   // Seite endet vor diesem Baustein
+        // Aufgabentexte und Überschriften bleiben bei dem, was zu ihnen gehört (Antwortplatz, Tabelle,
+        // Diagramm …): Sie wandern mit auf die neue Seite, solange davor noch etwas auf der Seite bleibt
+        var mit = [], v = e.previousSibling;
+        while(v && v.previousSibling && istAuftrag(v)){ mit.unshift(v); v = v.previousSibling; }
+        zuletzt = mit.length ? mit[0].previousSibling : e.previousSibling;   // Seite endet vor diesem Baustein
         naechsteSeite();
+        mit.forEach(platzieren);
         platzieren(e);
         if(e.offsetTop + e.offsetHeight - abst > inhalt.clientHeight + 0.5) e.classList.add('zu-gross');
       } else e.classList.add('zu-gross');
