@@ -57,7 +57,8 @@ REGEL 3 – UMFANG
 
 REGEL 4 – TEXTANTWORTEN
 • Begründen, Beschreiben, Erklären, Erläutern: 1 BE je fachlichem Aspekt. Es zählt
-  nur, was in Fachsprache und in ganzen Sätzen steht. Inhaltsleere Sätze,
+  nur, was in Fachsprache (mit den richtigen Fachbegriffen) und in ganzen Sätzen
+  steht; der Hinweis "fachsprache" im Kopf kündigt das an. Inhaltsleere Sätze,
   Umschreibungen und Alltagssprache zählen nicht. Richtwert: 3 Aspekte = 3 BE,
   etwa 3 Minuten.
 • Nennen, Angeben: ½ BE je Begriff, bei komplexeren Nennungen 1 BE. Ganze Sätze
@@ -99,7 +100,8 @@ REGEL 7 – MUSTERLÖSUNG
 
 REGEL 8 – FORM
 • Den Kopf (Art, Fach, Klasse, Datum, Zeit, Hilfsmittel, Hinweise) füllst du über
-  das Feld "kopf". Am Ende steht automatisch „Viel Erfolg!“.
+  das Feld "kopf". Hinweise: immer "sauber" und "fachsprache", in Physik zusätzlich
+  "rechenwege". Am Ende steht automatisch „Viel Erfolg!“.
 • Unter jeder Teilaufgabe Platz zum Schreiben: Baustein "loesung" (platz "linien",
   "karo" oder "leer", hoehe in cm) bzw. bei Rechnungen "rechnung" mit nurLoesung true
   und platz "geruest" (Karofeld mit Geg./Ges./Lösung). Richte die Größe des Platzes
@@ -120,8 +122,9 @@ kopf
   datum          "JJJJ-MM-TT"; leer = Linie zum Eintragen
   zeit           Bearbeitungszeit in Minuten (0 = keine Angabe)
   hilfsmittel    Auswahl aus "taschenrechner", "formelsammlung", "periodensystem"
-  hinweise       Auswahl aus "sauber" (saubere Schrift), "rechenwege" (vor allem Physik);
-                 der Hinweis zu digitalen Geräten und Unterschleif steht immer da
+  hinweise       Auswahl aus "sauber" (saubere Schrift), "fachsprache" (Fachsprache und
+                 ganze Sätze), "rechenwege" (vor allem Physik); der Hinweis zu
+                 digitalen Geräten und Unterschleif steht immer da
   eigenerHinweis Text oder ""
   umfangBegruendung  Text oder "" (Regel 3)
   vielErfolg     true
@@ -165,7 +168,7 @@ B-Fassung eines Bausteins stehen direkt hintereinander und tragen dieselbe "paar
 BEISPIEL (gekürzt, ohne Formelsammlung)
 {"editor":"leistungsnachweis","stand":3,
  "kopf":{"art":"stegreifaufgabe","nr":0,"fach":"Physik","klasse":"8b","datum":"","zeit":15,
-   "hilfsmittel":["taschenrechner"],"hinweise":["sauber","rechenwege"],"eigenerHinweis":"",
+   "hilfsmittel":["taschenrechner"],"hinweise":["sauber","fachsprache","rechenwege"],"eigenerHinweis":"",
    "umfangBegruendung":"","vielErfolg":true},
  "gruppen":false,"gruppe":"A",
  "bloecke":[
@@ -1272,12 +1275,13 @@ var GERAETE_HINWEIS = 'Digitale Geräte wie Handys, Tablets oder Smartwatches si
 // [Schlüssel, Text, Fächer, in denen der Hinweis vorausgewählt ist (null = unabhängig vom Fach)]
 var HINWEISE = [
   ['sauber', 'Nur sauber und ordentlich geschriebene Lösungen werden bewertet.', null],
+  ['fachsprache', 'Begründungen, Beschreibungen und Erklärungen werden nur in Fachsprache und in ganzen Sätzen bewertet.', null],
   ['rechenwege', 'Rechenwege müssen nachvollziehbar sein.', ['Physik']]
 ];
 
 function standardKopf(){
   return {art:'stegreifaufgabe', nr:1, fach:'', fachFrei:false, klasse:'', datum:'', zeit:15,
-    hilfsmittel:[], hinweise:['sauber'], eigenerHinweis:'', umfangBegruendung:'', vielErfolg:true};
+    hilfsmittel:[], hinweise:['sauber', 'fachsprache'], eigenerHinweis:'', umfangBegruendung:'', vielErfolg:true};
 }
 // Fachbezogene Hinweise passend zum Fach an- bzw. abwählen, die übrigen bleiben, wie sie sind
 function hinweiseFuerFach(fach, liste){
