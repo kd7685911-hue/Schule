@@ -18,7 +18,11 @@ gleiche Bausteine wie unten) und Vorgaben wie Art, Klasse, Zeit und Hilfsmittel.
 Erstelle daraus einen Leistungsnachweis mit Musterlösung als Datei
 *.leistungsnachweis.json. Die Lehrkraft öffnet sie im Editor („Öffnen …“), prüft sie
 in Schüler- und Lösungsfassung und passt sie an.
-  1. Frage nur Stoff ab, der in den Hefteinträgen und Arbeitsblättern steht.
+  1. Frage nur Stoff ab, der in den Hefteinträgen und Arbeitsblättern steht. Rechne
+     nur mit Formeln, mit denen auf den Arbeitsblättern schon gerechnet wurde. Steht
+     eine Formel nur im Hefteintrag, frage sie nicht ab, sondern weise die Lehrkraft
+     darauf hin. Was der LehrplanPLUS ausdrücklich nennt (z. B. Physik 10:
+     Zeit-Weg-Diagramme), hat Vorrang vor Ergänzungen aus dem Unterricht.
   2. Formuliere jeden Arbeitsauftrag mit einem Operator (Regel 1).
   3. Verteile die BE auf die Anforderungsbereiche (Regel 2) und richte den Umfang
      nach der Bearbeitungszeit (Regel 3).
@@ -86,6 +90,13 @@ REGEL 5 – RECHNUNGEN
   abgezogen, höchstens einmal je Teilaufgabe. Dafür gibt es keinen Haken.
 • Eine Rechnung soll zur Faustregel passen (1 BE etwa 1 Minute, typisch 2 bis 4 BE).
   In Physik müssen Rechenwege nachvollziehbar sein.
+• Mehrere Rechenaufgaben prüfen verschiedene Zusammenhänge ab, nicht zweimal
+  dasselbe. In der Bewegungslehre z. B. eine Rechnung zur gleichförmigen und eine
+  zur beschleunigten Bewegung, denn beide werden gern verwechselt.
+• Mehrschrittige Rechnungen, die so noch nicht geübt wurden (z. B. erst die Zeit,
+  dann der Weg), sind Transferaufgaben (AFB II): in Teilaufgaben gliedern und das
+  Zwischenergebnis angeben („Kontrollergebnis: t = 5,0 s“), damit ein Fehler nicht
+  alle folgenden BE kostet.
 
 REGEL 6 – DIAGRAMME
 • Koordinatensystem selbst zeichnen: 1 BE (ist es vorgegeben: 0 BE).
@@ -115,7 +126,8 @@ REGEL 8 – FORM
   "rechenwege". Am Ende steht automatisch „Viel Erfolg!“.
 • Unter jeder Teilaufgabe Platz zum Schreiben: Baustein "loesung" (platz "linien",
   "karo" oder "leer", hoehe in cm) bzw. bei Rechnungen "rechnung" mit nurLoesung true
-  und platz "geruest" (Karofeld mit Geg./Ges./Lösung). Richte die Größe des Platzes
+  und platz "karo": ein leeres Karofeld, Gegeben, Gesucht und Lösung schreiben die
+  Schüler selbst (kein vorgedrucktes Gerüst). Richte die Größe des Platzes
   nach der erwarteten Antwort: Handschrift braucht deutlich mehr Platz als die
   gedruckte Musterlösung. Passt schon die Musterlösung nicht hinein, meldet der
   Editor in der Lösungsfassung „Platz zu klein“.
@@ -149,7 +161,7 @@ Jeder Baustein hat "id" (eindeutig, z. B. "b1"), "typ" und je nach Typ diese Fel
                hoehe (cm). Schülerfassung: Platz zum Schreiben; Lösungsfassung: der Text.
   rechnung     geg (eine Größe je Zeile), ges, weg (Lösungsweg, ein Schritt je Zeile,
                Folgezeilen beginnen mit „=“), antwort, ergebnis (true = Ergebnis doppelt
-               unterstreichen), nurLoesung (true), platz ("geruest", "karo", "linien",
+               unterstreichen), nurLoesung (true), platz ("karo", "geruest", "linien",
                "leer"), hoehe (cm)
   text         html
   ueberschrift text, stufe ("gross" oder "klein")
@@ -193,7 +205,7 @@ BEISPIEL (gekürzt, ohne Formelsammlung)
   {"id":"t1","typ":"teilaufgabe","html":"Berechne seine Durchschnittsgeschwindigkeit in m/s.","punkte":3,"afb":"I"},
   {"id":"r1","typ":"rechnung","geg":"s = 1,2 km = 1200 m [½]\nt = 4 min = 240 s [½]","ges":"v",
    "weg":"v = s/t [✓]\n= 1200 m / 240 s\n= 5 m/s [✓]","antwort":"","ergebnis":true,
-   "nurLoesung":true,"platz":"geruest","hoehe":4},
+   "nurLoesung":true,"platz":"karo","hoehe":4},
   {"id":"t2","typ":"teilaufgabe","html":"Begründe, warum der Radfahrer bergab schneller wird.","punkte":2,"afb":"II"},
   {"id":"l1","typ":"loesung","html":"Die Hangabtriebskraft wirkt in Fahrtrichtung. [✓] Sie beschleunigt den Radfahrer zusätzlich. [✓]",
    "platz":"linien","hoehe":2.7}
@@ -2191,7 +2203,7 @@ TYPEN.formel = {
 
 TYPEN.rechnung = {
   name:'Rechnung',
-  neu:function(){ return {geg:'', ges:'', weg:'', antwort:'', ergebnis:true, nurLoesung:true, platz:'geruest', hoehe:7}; },
+  neu:function(){ return {geg:'', ges:'', weg:'', antwort:'', ergebnis:true, nurLoesung:true, platz:'karo', hoehe:5}; },
   zeichnen:function(b, box){
     if(b.nurLoesung && Z.fassung !== 'loesung'){ box.append(platzFeld(b.platz, b.hoehe)); return; }
     var r = neu('div', {'class':'rechnung' + (b.nurLoesung ? ' loesung' : '')});
@@ -2219,7 +2231,7 @@ TYPEN.rechnung = {
     p.haken('Ergebnis doppelt unterstreichen', 'ergebnis');
     p.haken('Nur in der Lösungsfassung zeigen', 'nurLoesung');
     if(b.nurLoesung){
-      p.auswahl('In der Schülerfassung stattdessen', 'platz', [['geruest', 'Karofeld mit Geg./Ges./Lösung'], ['karo', 'Karofeld'], ['linien', 'Schreiblinien'], ['leer', 'Freien Platz']]);
+      p.auswahl('In der Schülerfassung stattdessen', 'platz', [['karo', 'Karofeld'], ['geruest', 'Karofeld mit Geg./Ges./Lösung'], ['linien', 'Schreiblinien'], ['leer', 'Freien Platz']]);
       p.zahl('Höhe des Platzes', 'hoehe', {min:2, max:24, step:0.5, einheit:'cm'});
     }
     p.hilfe();
