@@ -36,10 +36,20 @@ sie im Editor eingestellt (gleiche Schlüssel wie im Regelwerk).
 REGEL 1 – AUFGABENSTELLUNG NUR MIT OPERATOREN
 • Jeder Arbeitsauftrag ist ein Aufforderungssatz, der mit einem Operator aus der
   Liste "operatoren" beginnt: „Nenne …“, „Beschreibe …“, „Berechne …“, „Begründe …“.
-  Keine Fragen („Wie viel …?“, „Warum …?“), keine Fragezeichen.
+  Die Liste ist die ISB-Liste „Operatoren im Physikunterricht“ (Realschule, Stand
+  3. April 2017); sie gilt auch für Chemie, Biologie und Natur und Technik, bis
+  eigene Listen hinterlegt sind. Informatik: zusätzlich die Liste "vorlaeufig".
+• Trennbare Verben: Der Zusatz steht am Satzende („Stelle die Messwerte in einem
+  Diagramm dar.“, „Leite die Formel für t her.“, „Schätze die Masse ab.“).
+• Keine Fragen („Wie viel …?“, „Warum …?“), keine Fragezeichen.
+• Nur für Ankreuz-, Lücken-, Zuordnungs- und Beschriftungsaufgaben: Anweisungen aus
+  der Liste "anweisungen" („Kreuze … an“, „Ergänze …“, „Beschrifte …“).
+• Verben aus der Liste "ersatz" stehen nicht in der ISB-Liste. Verwende stattdessen
+  den Operator aus "besser" (z. B. „Nenne“ statt „Gib … an“).
 • Einleitende Sätze (Situation, gegebene Größen) dürfen vor dem Auftrag stehen.
-• Der Operator legt die erwartete Leistung fest (Feld "erwartung") und passt zum
-  Anforderungsbereich (Feld "afb").
+• Der Operator legt die erwartete Leistung fest (Feld "erwartung", Wortlaut des ISB).
+  Das Feld "afb" ist nur eine Orientierung: Den Anforderungsbereich bestimmt die
+  konkrete Aufgabe (wie im Unterricht geübt: eher I; neue Situation: II oder III).
 
 REGEL 2 – ANFORDERUNGSBEREICHE (AFB)
 • Jede Teilaufgabe (bzw. jede Aufgabe ohne Teilaufgaben) hat genau einen AFB:
@@ -61,7 +71,7 @@ REGEL 4 – TEXTANTWORTEN
   steht; der Hinweis "fachsprache" im Kopf kündigt das an. Inhaltsleere Sätze,
   Umschreibungen und Alltagssprache zählen nicht. Richtwert: 3 Aspekte = 3 BE,
   etwa 3 Minuten.
-• Nennen, Angeben: ½ BE je Begriff, bei komplexeren Nennungen 1 BE. Ganze Sätze
+• Nennen, Benennen: ½ BE je Begriff, bei komplexeren Nennungen 1 BE. Ganze Sätze
   sind hier nicht nötig.
 
 REGEL 5 – RECHNUNGEN
@@ -187,7 +197,7 @@ BEISPIEL (gekürzt, ohne Formelsammlung)
 <title>Leistungsnachweis-Editor – Walther-Rathenau-Schulen</title>
 <script type="application/json" id="regelwerk">
 {
-  "fassung": 1,
+  "fassung": 2,
   "hinweis": "Standardwerte. Eine *.leistungsnachweis.json kann im Feld \"regeln\" eigene Werte haben (gleiche Gruppen und Schlüssel, nur die Zahl).",
   "werte": [
     {"gruppe": "umfang", "titel": "Umfang", "eintraege": [
@@ -203,7 +213,7 @@ BEISPIEL (gekürzt, ohne Formelsammlung)
     ]},
     {"gruppe": "texte", "titel": "Textantworten", "eintraege": [
       {"schluessel": "aspekt", "wert": 1, "einheit": "BE", "text": "je fachlichem Aspekt bei Begründen, Beschreiben, Erklären, Erläutern (nur Fachsprache in ganzen Sätzen)"},
-      {"schluessel": "nennen", "wert": 0.5, "einheit": "BE", "text": "je Begriff bei Nennen und Angeben"},
+      {"schluessel": "nennen", "wert": 0.5, "einheit": "BE", "text": "je Begriff bei Nennen und Benennen"},
       {"schluessel": "nennenKomplex", "wert": 1, "einheit": "BE", "text": "je komplexerer Nennung, z. B. ein Zusammenhang statt eines einzelnen Begriffs"}
     ]},
     {"gruppe": "rechnungen", "titel": "Rechnungen", "eintraege": [
@@ -227,43 +237,68 @@ BEISPIEL (gekürzt, ohne Formelsammlung)
       {"schluessel": "ablesewert", "wert": 0.5, "einheit": "BE", "text": "je Ablesung: abgelesener Wert mit Einheit"}
     ]}
   ],
+  "operatorenliste": {"titel": "Operatoren im Physikunterricht", "quelle": "ISB, Ergänzende Informationen zum LehrplanPLUS, Realschule, Physik, Jahrgangsstufe – alle –, Stand 3. April 2017. Grundlage ist die Handreichung der KMK.", "stand": "3. April 2017", "gilt": "Physik; außerdem Chemie, Biologie und Natur und Technik, bis für diese Fächer eigene ISB-Listen hinterlegt sind", "ergaenzungen": "Operator und erwartete Leistung stehen im Wortlaut des ISB. Ergänzt für den Editor: imperativ (Aufforderungsform; „…“ steht für den Rest des Satzes, danach folgt der abgetrennte Verbzusatz am Satzende) und afb (übliche Zuordnung, nur zur Orientierung – maßgeblich ist die konkrete Aufgabe)."},
   "operatoren": [
-    {"operator": "nennen, angeben", "imperativ": ["Nenne", "Gib"], "afb": "I", "erwartung": "Begriffe, Sachverhalte, Formeln, Regeln oder Daten ohne Erläuterung aufzählen bzw. wiedergeben („Gib … an“)"},
-    {"operator": "benennen", "imperativ": ["Benenne"], "afb": "I", "erwartung": "Begriffe und Sachverhalte einer vorgegebenen Struktur zuordnen"},
-    {"operator": "beschriften", "imperativ": ["Beschrifte"], "afb": "I", "erwartung": "Teile einer Abbildung, eines Aufbaus oder Diagramms mit Fachbegriffen versehen"},
-    {"operator": "zuordnen", "imperativ": ["Ordne"], "afb": "I", "erwartung": "Begriffe, Größen oder Sachverhalte einander zuweisen („Ordne … zu“)"},
-    {"operator": "ankreuzen, auswählen, eintragen, ergänzen, markieren", "imperativ": ["Kreuze", "Wähle", "Trage", "Ergänze", "Vervollständige", "Markiere"], "afb": "I", "erwartung": "Anweisungen für geschlossene Antwortformate"},
-    {"operator": "beschreiben", "imperativ": ["Beschreibe"], "afb": "I–II", "erwartung": "Sachverhalte wie Objekte und Prozesse nach Ordnungsprinzipien strukturiert unter Verwendung der Fachsprache wiedergeben"},
-    {"operator": "darstellen", "imperativ": ["Stelle"], "afb": "I–II", "erwartung": "Sachverhalte, Zusammenhänge, Methoden oder Ergebnisse strukturiert wiedergeben („Stelle … dar“)"},
-    {"operator": "skizzieren", "imperativ": ["Skizziere"], "afb": "I–II", "erwartung": "Sachverhalte, Strukturen oder Ergebnisse auf das Wesentliche reduziert übersichtlich darstellen"},
-    {"operator": "zeichnen", "imperativ": ["Zeichne"], "afb": "I–II", "erwartung": "eine möglichst exakte grafische Darstellung gegebener Strukturen oder Daten anfertigen"},
-    {"operator": "erstellen", "imperativ": ["Erstelle"], "afb": "I–II", "erwartung": "einen Sachverhalt in einer fachlich üblichen Form darstellen, z. B. Tabelle, Diagramm, Schaltplan"},
-    {"operator": "formulieren", "imperativ": ["Formuliere"], "afb": "I–II", "erwartung": "einen Sachverhalt fachlich korrekt ausdrücken, z. B. Reaktionsgleichung, Je-desto-Satz, Hypothese"},
-    {"operator": "berechnen", "imperativ": ["Berechne"], "afb": "I–II", "erwartung": "Ergebnisse aus gegebenen Werten rechnerisch generieren"},
-    {"operator": "bestimmen, ermitteln", "imperativ": ["Bestimme", "Ermittle"], "afb": "II", "erwartung": "Ergebnisse aus gegebenen Daten gewinnen, z. B. aus einem Diagramm; Lösungsweg darstellen"},
-    {"operator": "abschätzen", "imperativ": ["Schätze"], "afb": "II", "erwartung": "durch begründete Überlegungen Größenordnungen angeben („Schätze … ab“)"},
-    {"operator": "erklären", "imperativ": ["Erkläre"], "afb": "II", "erwartung": "Strukturen, Prozesse oder Zusammenhänge eines Sachverhalts erfassen und auf allgemeine Aussagen oder Gesetze zurückführen"},
-    {"operator": "erläutern", "imperativ": ["Erläutere"], "afb": "II", "erwartung": "einen Sachverhalt durch zusätzliche Informationen veranschaulichen und verständlich machen"},
+    {"operator": "ableiten", "imperativ": ["Leite … ab"], "afb": "II", "erwartung": "auf Grundlage von Erkenntnissen sachgerechte Schlüsse ziehen"},
+    {"operator": "abschätzen", "imperativ": ["Schätze … ab"], "afb": "II", "erwartung": "durch begründete Überlegungen Größenordnungen angeben"},
+    {"operator": "analysieren", "imperativ": ["Analysiere"], "afb": "II–III", "erwartung": "systematisches Untersuchen eines Sachverhaltes, bei dem Bestandteile, dessen Merkmale und ihre Beziehungen zueinander erfasst und dargestellt werden"},
+    {"operator": "anwenden", "imperativ": ["Wende … an"], "afb": "II", "erwartung": "einen bekannten Zusammenhang oder eine bekannte Methode auf einen anderen Sachverhalt beziehen"},
+    {"operator": "aufstellen von Hypothesen", "imperativ": ["Stelle … auf"], "afb": "II–III", "erwartung": "eine begründete Vermutung formulieren"},
+    {"operator": "auswerten", "imperativ": ["Werte … aus"], "afb": "II", "erwartung": "Daten, Einzelergebnisse oder andere Elemente in einen Zusammenhang stellen, gegebenenfalls zu einer Gesamtaussage zusammenführen und Schlussfolgerungen ziehen"},
     {"operator": "begründen", "imperativ": ["Begründe"], "afb": "II–III", "erwartung": "Sachverhalte auf Regeln, Gesetzmäßigkeiten bzw. kausale Zusammenhänge zurückführen"},
-    {"operator": "vergleichen", "imperativ": ["Vergleiche"], "afb": "II", "erwartung": "Gemeinsamkeiten, Ähnlichkeiten und Unterschiede ermitteln"},
-    {"operator": "auswerten", "imperativ": ["Werte"], "afb": "II", "erwartung": "Daten oder Beobachtungen in einen Zusammenhang stellen und zu einer Gesamtaussage zusammenführen („Werte … aus“)"},
-    {"operator": "anwenden", "imperativ": ["Wende"], "afb": "II", "erwartung": "einen bekannten Zusammenhang oder eine bekannte Methode auf einen anderen Sachverhalt beziehen („Wende … an“)"},
-    {"operator": "ableiten, herleiten", "imperativ": ["Leite"], "afb": "II–III", "erwartung": "auf der Grundlage von Erkenntnissen oder Daten sachgerechte Schlüsse ziehen („Leite … ab/her“)"},
-    {"operator": "analysieren, untersuchen", "imperativ": ["Analysiere", "Untersuche"], "afb": "II–III", "erwartung": "unter einer Fragestellung wichtige Bestandteile oder Eigenschaften herausarbeiten"},
-    {"operator": "interpretieren, deuten", "imperativ": ["Interpretiere", "Deute"], "afb": "II–III", "erwartung": "Zusammenhänge im Hinblick auf Erklärungsmöglichkeiten untersuchen und abwägend herausstellen"},
-    {"operator": "vermuten", "imperativ": ["Vermute"], "afb": "II–III", "erwartung": "eine begründete Vermutung auf der Grundlage von Beobachtungen oder Aussagen formulieren"},
-    {"operator": "planen, entwickeln", "imperativ": ["Plane", "Entwickle", "Entwirf"], "afb": "III", "erwartung": "zu einem Problem eine Lösung, ein Experiment oder ein Modell erarbeiten"},
-    {"operator": "überprüfen, prüfen", "imperativ": ["Überprüfe", "Prüfe"], "afb": "III", "erwartung": "Sachverhalte oder Aussagen an Fakten oder innerer Logik messen und Widersprüche aufdecken"},
-    {"operator": "beurteilen", "imperativ": ["Beurteile"], "afb": "III", "erwartung": "zu einem Sachverhalt ein selbstständiges Urteil mit Fachwissen und Fachmethoden formulieren und begründen"},
-    {"operator": "bewerten", "imperativ": ["Bewerte"], "afb": "III", "erwartung": "einen Sachverhalt an Kriterien oder Normen messen und eine eigene Position begründet vertreten"},
-    {"operator": "diskutieren, erörtern", "imperativ": ["Diskutiere", "Erörtere"], "afb": "III", "erwartung": "Argumente zu einer Aussage oder These einander gegenüberstellen und abwägen"},
-    {"operator": "dokumentieren, protokollieren", "imperativ": ["Dokumentiere", "Protokolliere"], "afb": "I–II", "erwartung": "Vorgehen, Beobachtungen und Ergebnisse vollständig und nachvollziehbar festhalten"},
-    {"operator": "zusammenfassen", "imperativ": ["Fasse"], "afb": "I–II", "erwartung": "wesentliche Aussagen knapp und strukturiert wiedergeben („Fasse … zusammen“)"},
-    {"operator": "klassifizieren, ordnen", "imperativ": ["Klassifiziere"], "afb": "II", "erwartung": "Objekte nach Merkmalen in Gruppen einteilen"},
-    {"operator": "implementieren (Informatik)", "imperativ": ["Implementiere"], "afb": "II–III", "erwartung": "einen Algorithmus oder ein Modell in einer Programmiersprache bzw. Software umsetzen"},
-    {"operator": "modellieren (Informatik)", "imperativ": ["Modelliere"], "afb": "II–III", "erwartung": "zu einem Sachverhalt ein Modell erstellen, z. B. Klassen-, Objekt- oder Zustandsdiagramm"}
+    {"operator": "benennen", "imperativ": ["Benenne"], "afb": "I", "erwartung": "Begriffe und Sachverhalte einer vorgegebenen Struktur zuordnen"},
+    {"operator": "berechnen", "imperativ": ["Berechne"], "afb": "I–II", "erwartung": "Ergebnisse aus gegebenen Werten rechnerisch generieren"},
+    {"operator": "beschreiben", "imperativ": ["Beschreibe"], "afb": "I–II", "erwartung": "Sachverhalte wie Objekte und Prozesse nach Ordnungsprinzipien strukturiert unter Verwendung der Fachsprache wiedergeben"},
+    {"operator": "bestimmen", "imperativ": ["Bestimme"], "afb": "II", "erwartung": "Ergebnisse aus gegebenen Daten generieren"},
+    {"operator": "beurteilen, bewerten", "imperativ": ["Beurteile", "Bewerte"], "afb": "III", "erwartung": "zu einem Sachverhalt eine selbstständige Einschätzung nach fachwissenschaftlichen und fachmethodischen Kriterien angeben"},
+    {"operator": "beweisen", "imperativ": ["Beweise"], "afb": "III", "erwartung": "mit Hilfe von sachlichen Argumenten durch logisches Herleiten eine Behauptung/Aussage belegen bzw. widerlegen"},
+    {"operator": "darstellen", "imperativ": ["Stelle … dar"], "afb": "I–II", "erwartung": "Sachverhalte, Zusammenhänge, Methoden, Ergebnisse etc. strukturiert wiedergeben"},
+    {"operator": "diskutieren", "imperativ": ["Diskutiere"], "afb": "III", "erwartung": "Argumente zu einer Aussage oder These einander gegenüberstellen und abwägen"},
+    {"operator": "dokumentieren", "imperativ": ["Dokumentiere"], "afb": "I–II", "erwartung": "alle notwendigen Erklärungen, Herleitungen und Skizzen zu einem Sachverhalt/Vorgang angeben"},
+    {"operator": "erklären", "imperativ": ["Erkläre"], "afb": "II", "erwartung": "Strukturen, Prozesse, Zusammenhänge, usw. eines Sachverhaltes erfassen und auf allgemeine Aussagen/Gesetze zurückführen"},
+    {"operator": "erläutern", "imperativ": ["Erläutere"], "afb": "II", "erwartung": "wesentliche Seiten eines Sachverhalts/Gegenstands/Vorgangs an Beispielen oder durch zusätzliche Informationen verständlich machen"},
+    {"operator": "formulieren", "imperativ": ["Formuliere"], "afb": "I–II", "erwartung": "eine Beschreibung eines Sachverhaltes oder eines Vorgangs in einer Folge von Symbolen oder Wörtern angeben"},
+    {"operator": "herleiten", "imperativ": ["Leite … her"], "afb": "II", "erwartung": "aus Größengleichungen durch mathematische Operationen eine physikalische Größe freistellen und dabei wesentliche Lösungsschritte kommentieren"},
+    {"operator": "interpretieren, deuten", "imperativ": ["Interpretiere", "Deute"], "afb": "II–III", "erwartung": "Sachverhalte und Zusammenhänge im Hinblick auf Erklärungsmöglichkeiten herausarbeiten"},
+    {"operator": "klassifizieren, ordnen", "imperativ": ["Klassifiziere", "Ordne"], "afb": "II", "erwartung": "Begriffe, Gegenstände etc. auf der Grundlage bestimmter Merkmale systematisch einteilen"},
+    {"operator": "nennen", "imperativ": ["Nenne"], "afb": "I", "erwartung": "Elemente, Sachverhalte, Begriffe, Daten, Fakten ohne Erläuterung wiedergeben"},
+    {"operator": "planen", "imperativ": ["Plane"], "afb": "III", "erwartung": "zu einem vorgegebenen Problem eine Experimentieranordnung finden und eine Experimentieranleitung erstellen"},
+    {"operator": "protokollieren", "imperativ": ["Protokolliere"], "afb": "I–II", "erwartung": "Ablauf, Beobachtungen und Ergebnisse sowie ggf. Auswertung"},
+    {"operator": "prüfen/überprüfen", "imperativ": ["Prüfe", "Überprüfe"], "afb": "III", "erwartung": "Sachverhalte oder Aussagen an Fakten oder innerer Logik messen und ggf. Widersprüche aufdecken"},
+    {"operator": "recherchieren", "imperativ": ["Recherchiere"], "afb": "I–II", "erwartung": "Informationen aus Quellen beschaffen"},
+    {"operator": "reflektieren", "imperativ": ["Reflektiere"], "afb": "III", "erwartung": "Gegebenes kritisch überdenken"},
+    {"operator": "skizzieren", "imperativ": ["Skizziere"], "afb": "I–II", "erwartung": "Sachverhalte, Objekte, Strukturen oder Ergebnisse auf das Wesentliche reduzieren und in übersichtlicher Weise wiedergeben"},
+    {"operator": "untersuchen", "imperativ": ["Untersuche"], "afb": "II–III", "erwartung": "Sachverhalte/Objekte erkunden, Merkmale und Zusammenhänge herausarbeiten"},
+    {"operator": "verallgemeinern", "imperativ": ["Verallgemeinere"], "afb": "II–III", "erwartung": "aus einem erkannten Sachverhalt eine erweiterte Aussage treffen"},
+    {"operator": "vergleichen", "imperativ": ["Vergleiche"], "afb": "II", "erwartung": "Gemeinsamkeiten und Unterschiede von Sachverhalten, Objekten Lebewesen und Vorgängen ermitteln"},
+    {"operator": "zeichnen", "imperativ": ["Zeichne"], "afb": "I–II", "erwartung": "eine exakte Darstellung beobachtbarer oder gegebener Strukturen anfertigen"},
+    {"operator": "zusammenfassen", "imperativ": ["Fasse … zusammen"], "afb": "I–II", "erwartung": "das Wesentliche in konzentrierter Form wiedergeben"}
   ],
-  "quelle": "Auswahl nach den ISB-Operatorenlisten für die Realschule (LehrplanPLUS, u. a. „Operatoren im Physikunterricht“) und der KMK-Operatorenliste für die Naturwissenschaften. Noch mit den Originallisten abzugleichen."
+  "anweisungen": [
+    {"anweisung": "ankreuzen", "imperativ": ["Kreuze … an"], "afb": "I", "erwartung": "in vorgegebenen Antworten das Zutreffende ankreuzen"},
+    {"anweisung": "auswählen", "imperativ": ["Wähle … aus"], "afb": "I", "erwartung": "aus vorgegebenen Möglichkeiten das Zutreffende auswählen"},
+    {"anweisung": "ergänzen, vervollständigen", "imperativ": ["Ergänze", "Vervollständige"], "afb": "I", "erwartung": "Lücken in einem Text, einer Tabelle oder einer Skizze füllen"},
+    {"anweisung": "eintragen", "imperativ": ["Trage … ein"], "afb": "I", "erwartung": "Werte, Begriffe oder Messpunkte an der vorgesehenen Stelle eintragen"},
+    {"anweisung": "zuordnen, verbinden", "imperativ": ["Ordne … zu", "Verbinde"], "afb": "I", "erwartung": "Begriffe, Größen oder Abbildungen einander zuweisen"},
+    {"anweisung": "beschriften", "imperativ": ["Beschrifte"], "afb": "I", "erwartung": "Teile einer Abbildung, eines Aufbaus oder eines Diagramms mit Fachbegriffen versehen"},
+    {"anweisung": "markieren, unterstreichen", "imperativ": ["Markiere", "Unterstreiche"], "afb": "I", "erwartung": "Stellen in einem Text oder einer Abbildung kennzeichnen"}
+  ],
+  "ersatz": [
+    {"imperativ": ["Gib … an"], "besser": "Nenne"},
+    {"imperativ": ["Ermittle"], "besser": "Bestimme"},
+    {"imperativ": ["Stelle … um"], "besser": "Leite … her"},
+    {"imperativ": ["Rechne … aus", "Rechne … um"], "besser": "Berechne"},
+    {"imperativ": ["Erstelle"], "besser": "Zeichne bzw. Stelle … dar"},
+    {"imperativ": ["Vermute"], "besser": "Stelle eine Hypothese auf"},
+    {"imperativ": ["Entwickle", "Entwirf"], "besser": "Plane"},
+    {"imperativ": ["Schildere"], "besser": "Beschreibe"},
+    {"imperativ": ["Zeige"], "besser": "Begründe bzw. Beweise"},
+    {"imperativ": ["Notiere", "Schreibe … auf"], "besser": "Nenne"}
+  ],
+  "vorlaeufig": [
+    {"operator": "implementieren", "imperativ": ["Implementiere"], "afb": "II–III", "erwartung": "einen Algorithmus oder ein Modell in einer Programmiersprache bzw. Software umsetzen", "fach": "Informatik"},
+    {"operator": "modellieren", "imperativ": ["Modelliere"], "afb": "II–III", "erwartung": "zu einem Sachverhalt ein Modell erstellen, z. B. Klassen-, Objekt- oder Zustandsdiagramm", "fach": "Informatik"}
+  ]
 }
 </script>
 <style>
@@ -1701,10 +1736,16 @@ function auftragPanel(b, p, mitAfb, operatorPflicht){
 function auftragInfo(info, b){
   var a = auftragPruefen(b.html), pflicht = info.dataset.pflicht === '1';
   info.replaceChildren();
-  if(pflicht && a.operator){
-    info.append(neu('p', {'class':'hilfe', style:'margin:0', html:'Operator <b>' + esc(a.operator.wort) + '</b> ('
-      + esc(a.operator.eintrag.operator) + ', üblich AFB ' + esc(a.operator.eintrag.afb) + '): '
-      + esc(a.operator.eintrag.erwartung) + '.'}));
+  var o = a.operator;
+  if(pflicht && o && o.art === 'ersatz'){
+    info.append(neu('p', {'class':'warnhinweis', text:'„' + o.wort + '“ steht nicht in der ISB-Operatorenliste. '
+      + 'Besser: „' + o.eintrag.besser + '“.'}));
+  } else if(pflicht && o){
+    var art = o.art === 'anweisung' ? 'Anweisung für ein geschlossenes Format' : o.art === 'vorlaeufig'
+      ? 'Vorläufiger Operator für ' + o.eintrag.fach : 'Operator';
+    info.append(neu('p', {'class':'hilfe', style:'margin:0', html:art + ' <b>' + esc(o.wort) + '</b> ('
+      + esc(o.eintrag.operator || o.eintrag.anweisung) + '): ' + esc(o.eintrag.erwartung) + '. '
+      + 'Orientierung: AFB ' + esc(o.eintrag.afb) + '.'}));
   } else if(pflicht && !a.leer){
     info.append(neu('p', {'class':'warnhinweis', text:'Kein Operator erkannt. Der Arbeitsauftrag beginnt mit einem Operator, '
       + 'z. B. „Berechne …“, „Begründe …“, „Nenne …“.'}));
@@ -3326,6 +3367,8 @@ function pruefungen(){
     var a = auftragPruefen(x.b.html);
     if(a.leer) liste.push({ziel:x.b.id, text:n + ': noch kein Arbeitsauftrag'});
     else if(!a.operator) liste.push({ziel:x.b.id, text:n + ': kein Operator am Satzanfang'});
+    else if(a.operator.art === 'ersatz') liste.push({ziel:x.b.id, text:n + ': „' + a.operator.wort
+      + '“ ist kein Operator der ISB-Liste – besser „' + a.operator.eintrag.besser + '“'});
   }
   s.aufgaben.forEach(function(a){
     frage(a, name(a));
@@ -3358,7 +3401,8 @@ function pruefungBereich(p){
     neu('p', {'class':'p-umfang'}),
     neu('label', {'class':'feld p-begruendung'}, [neu('span', {text:'Begründung für den Umfang (steht in der Musterlösung)'})]),
     neu('div', {'class':'p-afb'}),
-    neu('ul', {'class':'p-liste'})
+    neu('ul', {'class':'p-liste'}),
+    neu('p', {'class':'hilfe p-quelle', style:'margin:0'})
   ]);
   var ta = neu('textarea', {rows:2, placeholder:'z. B. Viele kurze Nennungen, die schnell zu beantworten sind.'});
   ta.value = Z.kopf.umfangBegruendung;
@@ -3394,6 +3438,10 @@ function pruefungAktualisieren(){
     if(Math.abs(zielSumme - 100) > 1e-9) afb.append(neu('p', {'class':'warnhinweis', style:'margin-top:4px',
       text:'Die Zielwerte ergeben zusammen ' + beText(zielSumme) + ' % statt 100 % – bitte unter „Bewertungsregeln einstellen“ anpassen.'}));
   }
+
+  var ol = REGELWERK.operatorenliste, fach = Z.kopf.fach.trim();
+  $('.p-quelle', box).textContent = 'Operatoren nach der ISB-Liste „' + ol.titel + '“ (Realschule, Stand ' + ol.stand + ').'
+    + (fach && fach !== 'Physik' ? ' Für ' + fach + ' ist noch keine eigene Liste hinterlegt.' : '');
 
   var ul = $('.p-liste', box);
   ul.replaceChildren();
@@ -3707,8 +3755,21 @@ function struktur(g){
 }
 
 /* ================= Operatoren ================= */
-var OPERATOREN = {};   // Imperativ (klein geschrieben) → Eintrag aus dem Regelwerk
-REGELWERK.operatoren.forEach(function(o){ o.imperativ.forEach(function(w){ OPERATOREN[w.toLowerCase()] = o; }); });
+// Stamm der Aufforderung (klein geschrieben) → mögliche Einträge. Trennbare Verben stehen im Regelwerk
+// als „Stelle … dar“: Der Stamm beginnt den Satz, der Zusatz beendet einen Satzteil.
+var OPERATOREN = {};
+function operatorenLernen(liste, art){
+  (liste || []).forEach(function(o){
+    o.imperativ.forEach(function(w){
+      var t = w.split(/\s*…\s*/), stamm = t[0].toLowerCase();
+      (OPERATOREN[stamm] = OPERATOREN[stamm] || []).push({wort:w, zusatz:(t[1] || '').toLowerCase(), art:art, eintrag:o});
+    });
+  });
+}
+operatorenLernen(REGELWERK.operatoren, 'operator');       // ISB-Liste
+operatorenLernen(REGELWERK.anweisungen, 'anweisung');     // geschlossene Formate
+operatorenLernen(REGELWERK.ersatz, 'ersatz');             // nicht in der Liste, mit besserem Operator
+operatorenLernen(REGELWERK.vorlaeufig, 'vorlaeufig');     // nur im genannten Fach
 function nurText(html){
   var d = document.createElement('div');
   d.innerHTML = String(html || '').replace(/\$[^$]*\$/g, ' Formel ');
@@ -3719,9 +3780,19 @@ function auftragPruefen(html){
   var t = nurText(html), operator = null;
   t.split(/[.!?:;]\s+/).some(function(satz){
     var w = (/^[„"»(]*([A-Za-zÄÖÜäöüß]+)/.exec(satz.trim()) || [])[1];
-    var e = w && OPERATOREN[w.toLowerCase()];
-    if(e) operator = {wort:w, eintrag:e};
-    return !!e;
+    var moegliche = ((w && OPERATOREN[w.toLowerCase()]) || []).filter(function(m){
+      return m.art !== 'vorlaeufig' || m.eintrag.fach === Z.kopf.fach;
+    });
+    if(!moegliche.length) return false;
+    // letzte Wörter der Satzteile: Dort steht der Zusatz trennbarer Verben („Stelle … dar.“)
+    var enden = satz.split(/[,;:.!?]/).map(function(x){
+      var m = /([A-Za-zÄÖÜäöüß]+)[^A-Za-zÄÖÜäöüß]*$/.exec(x);
+      return m ? m[1].toLowerCase() : '';
+    });
+    var treffer = moegliche.filter(function(m){ return m.zusatz && enden.indexOf(m.zusatz) >= 0; })[0]
+      || moegliche.filter(function(m){ return !m.zusatz; })[0];
+    if(treffer) operator = treffer;
+    return !!treffer;
   });
   return {leer:!t, operator:operator, frage:t.indexOf('?') >= 0};
 }
@@ -4473,7 +4544,7 @@ document.addEventListener('visibilitychange', function(){ if(document.hidden) lo
 
 window.Blatt = {zustand:function(){ return Z; }, laden:laden, planen:planen, einfuegen:einfuegen, fassung:fassungSetzen, modus:modusSetzen,
   gruppen:gruppenSchalten, gruppe:gruppeSetzen, abwandeln:abwandeln, struktur:struktur, waehlen:waehlen,
-  verschieben:verschieben, duplizieren:duplizieren, loeschen:loeschen};
+  verschieben:verschieben, duplizieren:duplizieren, loeschen:loeschen, auftrag:auftragPruefen};
 })();
 
 </script>
