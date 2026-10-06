@@ -2,8 +2,267 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
+<!--
+══════════════════════════════════════════════════════════════════════════════
+ANLEITUNG FÜR KI-ASSISTENTEN – BITTE ZUERST LESEN
+══════════════════════════════════════════════════════════════════════════════
+Diese Datei ist der Leistungsnachweis-Editor der Walther-Rathenau-Realschule
+Schweinfurt (Bayern) für Stegreifaufgaben (Ex), Kurzarbeiten und Schulaufgaben,
+vor allem in Physik, Chemie und Informatik. Er läuft ohne Installation im Browser.
+Hier stehen alle Regeln, nach denen Aufgaben und Musterlösungen gebaut werden,
+und das Dateiformat. Halte dich daran, ohne dass die Lehrkraft sie erneut erklärt.
+
+DEIN AUFTRAG (üblicher Fall)
+Die Lehrkraft gibt dir Hefteinträge und Arbeitsblätter als JSON (*.arbeitsblatt.json,
+gleiche Bausteine wie unten) und Vorgaben wie Art, Klasse, Zeit und Hilfsmittel.
+Erstelle daraus einen Leistungsnachweis mit Musterlösung als Datei
+*.leistungsnachweis.json. Die Lehrkraft öffnet sie im Editor („Öffnen …“), prüft sie
+in Schüler- und Lösungsfassung und passt sie an.
+  1. Frage nur Stoff ab, der in den Hefteinträgen und Arbeitsblättern steht.
+  2. Formuliere jeden Arbeitsauftrag mit einem Operator (Regel 1).
+  3. Verteile die BE auf die Anforderungsbereiche (Regel 2) und richte den Umfang
+     nach der Bearbeitungszeit (Regel 3).
+  4. Vergib die BE nach den Regeln 4 bis 6 und schreibe eine vollständige
+     Musterlösung mit Haken (Regel 7).
+  5. Sieh unter jeder Teilaufgabe Platz zum Schreiben vor (Regel 8).
+  6. Gib der Lehrkraft zusätzlich eine kurze Übersicht: BE je Aufgabe,
+     AFB-Verteilung, Zeit, und begründe jede Abweichung von den Regeln.
+
+Die Zahlenwerte der Regeln und die Operatorenliste stehen im JSON-Block
+<script id="regelwerk"> direkt unter diesem Kommentar. Enthält eine
+*.leistungsnachweis.json das Feld "regeln", gelten dessen Werte: Die Lehrkraft hat
+sie im Editor eingestellt (gleiche Schlüssel wie im Regelwerk).
+
+REGEL 1 – AUFGABENSTELLUNG NUR MIT OPERATOREN
+• Jeder Arbeitsauftrag ist ein Aufforderungssatz, der mit einem Operator aus der
+  Liste "operatoren" beginnt: „Nenne …“, „Beschreibe …“, „Berechne …“, „Begründe …“.
+  Keine Fragen („Wie viel …?“, „Warum …?“), keine Fragezeichen.
+• Einleitende Sätze (Situation, gegebene Größen) dürfen vor dem Auftrag stehen.
+• Der Operator legt die erwartete Leistung fest (Feld "erwartung") und passt zum
+  Anforderungsbereich (Feld "afb").
+
+REGEL 2 – ANFORDERUNGSBEREICHE (AFB)
+• Jede Teilaufgabe (bzw. jede Aufgabe ohne Teilaufgaben) hat genau einen AFB:
+  I Reproduktion · II Reorganisation und Transfer · III Reflexion und Problemlösen.
+• Zielverteilung der BE: AFB I 40 %, AFB II 45 %, AFB III 15 %, je ±10 Prozentpunkte.
+  An der Realschule liegt der Schwerpunkt auf AFB I und II. AFB III ist eine kleine
+  Problemlösungsaufgabe zur Differenzierung im Bereich der Note 1.
+
+REGEL 3 – UMFANG
+• Faustregel: 1 BE je Minute Bearbeitungszeit. Ex (15 Minuten): rund 15 BE,
+  Schulaufgabe (45 Minuten): 40 bis 50 BE. Üblich sind ±10 %.
+• Mehr BE (bis +33 %, z. B. 20 BE in einer Ex mit 15 Minuten) nur mit Begründung
+  im Feld kopf.umfangBegruendung; sie erscheint in der Musterlösung.
+• BE nur in ganzen oder halben Schritten.
+
+REGEL 4 – TEXTANTWORTEN
+• Begründen, Beschreiben, Erklären, Erläutern: 1 BE je fachlichem Aspekt. Es zählt
+  nur, was in Fachsprache und in ganzen Sätzen steht. Inhaltsleere Sätze,
+  Umschreibungen und Alltagssprache zählen nicht. Richtwert: 3 Aspekte = 3 BE,
+  etwa 3 Minuten.
+• Nennen, Angeben: ½ BE je Begriff, bei komplexeren Nennungen 1 BE. Ganze Sätze
+  sind hier nicht nötig.
+
+REGEL 5 – RECHNUNGEN
+• Formel (Ansatz): 1 BE, wenn keine Formelsammlung zugelassen ist (kopf.hilfsmittel
+  ohne "formelsammlung") oder die Formel nicht in der Formelsammlung steht, sonst
+  0 BE. Maßgeblich ist die zugelassene Formelsammlung für die Realschule in Bayern;
+  ihr Inhalt folgt den Datenblättern des ISB für Mathematik, Physik und Chemie.
+• Formel umstellen: ½ BE. Einheit umrechnen: ½ BE je Umrechnung. Einsetzen und
+  Ausrechnen: 1 BE je Rechenschritt bis zu einem Zwischen- oder Endergebnis.
+  Gegeben/Gesucht und Antwortsatz: 0 BE.
+• Korrekturregel: Fehlt beim Ergebnis die Einheit oder ist sie falsch, wird ½ BE
+  abgezogen, höchstens einmal je Teilaufgabe. Dafür gibt es keinen Haken.
+• Eine Rechnung soll zur Faustregel passen (1 BE etwa 1 Minute, typisch 2 bis 4 BE).
+  In Physik müssen Rechenwege nachvollziehbar sein.
+
+REGEL 6 – DIAGRAMME
+• Koordinatensystem selbst zeichnen: 1 BE (ist es vorgegeben: 0 BE).
+• Achsenbeschriftung mit Größe und Einheit: ½ BE je Achse.
+• Messpunkte eintragen: ½ BE je Punkt bis Jahrgangsstufe 9, ab Jahrgangsstufe 10
+  ½ BE je zwei Punkte (auf halbe BE abrunden). Die Jahrgangsstufe ist die Zahl in
+  kopf.klasse („10b“ → 10).
+• Graph zeichnen: 1 BE.
+• Ablesen: Hilfslinien senkrecht und waagrecht zu den Achsen müssen eingezeichnet
+  sein: ½ BE für die Hilfslinien, ½ BE für den Wert mit Einheit. In der Musterlösung
+  zeigt das Diagramm die Hilfslinien (Feld "marken").
+
+REGEL 7 – MUSTERLÖSUNG
+• Fachlich korrekt und vollständig. Sie muss der Prüfung durch die
+  Fachschaftsleitung standhalten: Jede BE ist nachvollziehbar.
+• Jede BE steht als Haken genau an der Stelle, für die sie vergeben wird:
+  [✓] = 1 BE, [½] = ½ BE (gedruckt als Haken mit Strich). In Formelzeilen steht der
+  Haken am Zeilenende, in Texten direkt hinter dem Aspekt.
+• Die Haken einer Teilaufgabe ergeben zusammen genau ihre BE. Der Editor prüft das.
+• Bei Diagrammen folgt ein Baustein "loesung" mit den Bewertungspunkten, z. B.
+  „Achsen beschriftet [½] [½] · Messpunkte [✓] [✓] · Graph [✓]“.
+
+REGEL 8 – FORM
+• Den Kopf (Art, Fach, Klasse, Datum, Zeit, Hilfsmittel, Hinweise) füllst du über
+  das Feld "kopf". Am Ende steht automatisch „Viel Erfolg!“.
+• Unter jeder Teilaufgabe Platz zum Schreiben: Baustein "loesung" (platz "linien",
+  "karo" oder "leer", hoehe in cm) bzw. bei Rechnungen "rechnung" mit nurLoesung true
+  und platz "geruest" (Karofeld mit Geg./Ges./Lösung). Richte die Größe des Platzes
+  nach der erwarteten Antwort: Handschrift braucht deutlich mehr Platz als die
+  gedruckte Musterlösung. Passt schon die Musterlösung nicht hinein, meldet der
+  Editor in der Lösungsfassung „Platz zu klein“.
+
+DATEIFORMAT *.leistungsnachweis.json (UTF-8, gültiges JSON)
+Oberste Ebene: "editor": "leistungsnachweis", "stand": 3, "kopf", "gruppen" (false),
+"gruppe" ("A"), "regeln" (optional), "bloecke" (Bausteine von oben nach unten).
+
+kopf
+  art            "stegreifaufgabe" | "kurzarbeit" | "schulaufgabe" | "nachholschulaufgabe"
+  nr             Nummer der Schulaufgabe 1 bis 4 (0 = ohne)
+  fach           "Biologie", "Chemie", "Informatik", "Mathematik", "Natur und Technik",
+                 "Physik"; anderes Fach: "fachFrei": true und freier Name
+  klasse         z. B. "8b"; leer = Linie zum Eintragen
+  datum          "JJJJ-MM-TT"; leer = Linie zum Eintragen
+  zeit           Bearbeitungszeit in Minuten (0 = keine Angabe)
+  hilfsmittel    Auswahl aus "taschenrechner", "formelsammlung", "periodensystem"
+  hinweise       Auswahl aus "sauber" (saubere Schrift), "rechenwege" (vor allem Physik);
+                 der Hinweis zu digitalen Geräten und Unterschleif steht immer da
+  eigenerHinweis Text oder ""
+  umfangBegruendung  Text oder "" (Regel 3)
+  vielErfolg     true
+
+Jeder Baustein hat "id" (eindeutig, z. B. "b1"), "typ" und je nach Typ diese Felder:
+  aufgabe      html (Aufgabentext), punkte (BE, nur ohne Teilaufgaben), afb ("I", "II",
+               "III" oder "" bei Aufgaben mit Teilaufgaben). Wird automatisch nummeriert
+               und zählt die BE ihrer Teilaufgaben zusammen.
+  teilaufgabe  html, punkte (BE), afb. Wird automatisch mit a), b), c) beschriftet.
+  loesung      html (Musterlösung mit Haken), platz ("linien", "karo", "leer", "kein"),
+               hoehe (cm). Schülerfassung: Platz zum Schreiben; Lösungsfassung: der Text.
+  rechnung     geg (eine Größe je Zeile), ges, weg (Lösungsweg, ein Schritt je Zeile,
+               Folgezeilen beginnen mit „=“), antwort, ergebnis (true = Ergebnis doppelt
+               unterstreichen), nurLoesung (true), platz ("geruest", "karo", "linien",
+               "leer"), hoehe (cm)
+  text         html
+  ueberschrift text, stufe ("gross" oder "klein")
+  merke        titel, html, farbe ("petrol" oder "koralle")
+  formel       eingabe (Formelschreibweise), rahmen, beschriftung, nurLoesung
+  tabelle      zeilen (Liste von Zeilen, jede eine Liste von Zellen), kopf (true = erste
+               Zeile ist Kopfzeile), loesungSpalte (true = letzte Spalte nur in der Lösung)
+  linien       anzahl, abstand (8, 9 oder 11 mm)
+  karo         hoehe (cm)          leer  hoehe (cm)          umbruch  (keine Felder)
+  bild         src (Bild als data-URL), breite (%), ausrichtung ("links", "mitte", "rechts")
+  diagramm     siehe TYPEN.diagramm.neu() im Quelltext; nurGraph bzw. nurPunkte true =
+               Graph bzw. Messpunkte nur in der Lösung
+  Weitere Bausteine (gitter, raetsel, symtab): siehe TYPEN.<typ>.neu() im Quelltext.
+
+Text in html-Feldern: einfaches HTML (<b>, <i>, <u>, <br>, <ul><li>, <ol><li>).
+Formeln und Größen in Texten stehen zwischen Dollarzeichen: $v = 72 km/h$.
+Formelschreibweise (Felder eingabe, geg, ges, weg und alles zwischen $…$):
+  F = m * a · E_kin = 1/2 * m * v^2 · v = 12 m/s (Einheit hinter der Zahl) ·
+  Delta t, rho, lambda (griechische Buchstaben) · sqrt(2*g*h) · ~= => <= >= != +- ·
+  "Text" für normalen Text
+Haken [✓] und [½] gehen in html-Feldern, Tabellenzellen und Formelzeilen. Sie
+erscheinen nur in der Lösungsfassung.
+Gruppe B (nur auf Wunsch): "gruppen": true. Bausteine mit "gruppe": "A" bzw. "B"
+gelten nur für diese Gruppe, Bausteine ohne "gruppe" für beide. Die A- und die
+B-Fassung eines Bausteins stehen direkt hintereinander und tragen dieselbe "paar"-Kennung.
+
+BEISPIEL (gekürzt, ohne Formelsammlung)
+{"editor":"leistungsnachweis","stand":3,
+ "kopf":{"art":"stegreifaufgabe","nr":0,"fach":"Physik","klasse":"8b","datum":"","zeit":15,
+   "hilfsmittel":["taschenrechner"],"hinweise":["sauber","rechenwege"],"eigenerHinweis":"",
+   "umfangBegruendung":"","vielErfolg":true},
+ "gruppen":false,"gruppe":"A",
+ "bloecke":[
+  {"id":"a1","typ":"aufgabe","html":"Ein Radfahrer fährt $s = 1,2 km$ in $t = 4 min$.","punkte":0,"afb":""},
+  {"id":"t1","typ":"teilaufgabe","html":"Berechne seine Durchschnittsgeschwindigkeit in m/s.","punkte":3,"afb":"I"},
+  {"id":"r1","typ":"rechnung","geg":"s = 1,2 km = 1200 m [½]\nt = 4 min = 240 s [½]","ges":"v",
+   "weg":"v = s/t [✓]\n= 1200 m / 240 s\n= 5 m/s [✓]","antwort":"","ergebnis":true,
+   "nurLoesung":true,"platz":"geruest","hoehe":4},
+  {"id":"t2","typ":"teilaufgabe","html":"Begründe, warum der Radfahrer bergab schneller wird.","punkte":2,"afb":"II"},
+  {"id":"l1","typ":"loesung","html":"Die Hangabtriebskraft wirkt in Fahrtrichtung. [✓] Sie beschleunigt den Radfahrer zusätzlich. [✓]",
+   "platz":"linien","hoehe":2.7}
+ ]}
+══════════════════════════════════════════════════════════════════════════════
+-->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Leistungsnachweis-Editor – Walther-Rathenau-Schulen</title>
+<script type="application/json" id="regelwerk">
+{
+  "fassung": 1,
+  "hinweis": "Standardwerte. Eine *.leistungsnachweis.json kann im Feld \"regeln\" eigene Werte haben (gleiche Gruppen und Schlüssel, nur die Zahl).",
+  "werte": [
+    {"gruppe": "umfang", "titel": "Umfang", "eintraege": [
+      {"schluessel": "beJeMinute", "wert": 1, "einheit": "BE je Minute", "text": "Faustregel: Gesamt-BE etwa gleich der Bearbeitungszeit in Minuten"},
+      {"schluessel": "spielraum", "wert": 10, "einheit": "%", "text": "übliche Abweichung nach oben und unten (Schulaufgabe 45 Minuten: 40–50 BE)"},
+      {"schluessel": "mitBegruendung", "wert": 33, "einheit": "%", "text": "darüber hinaus nur mit Begründung bis zu dieser Überschreitung (Ex 15 Minuten: bis 20 BE)"}
+    ]},
+    {"gruppe": "afb", "titel": "Anforderungsbereiche (Anteil der BE)", "eintraege": [
+      {"schluessel": "I", "wert": 40, "einheit": "%", "text": "AFB I – Reproduktion: Gelerntes wiedergeben, bekannte Verfahren in bekannten Situationen anwenden"},
+      {"schluessel": "II", "wert": 45, "einheit": "%", "text": "AFB II – Reorganisation und Transfer: Gelerntes selbstständig ordnen und auf vergleichbare neue Situationen übertragen"},
+      {"schluessel": "III", "wert": 15, "einheit": "%", "text": "AFB III – Reflexion und Problemlösen: eine kleine Aufgabe zur Differenzierung im Bereich der Note 1"},
+      {"schluessel": "spielraum", "wert": 10, "einheit": "Prozentpunkte", "text": "erlaubte Abweichung je Anforderungsbereich"}
+    ]},
+    {"gruppe": "texte", "titel": "Textantworten", "eintraege": [
+      {"schluessel": "aspekt", "wert": 1, "einheit": "BE", "text": "je fachlichem Aspekt bei Begründen, Beschreiben, Erklären, Erläutern (nur Fachsprache in ganzen Sätzen)"},
+      {"schluessel": "nennen", "wert": 0.5, "einheit": "BE", "text": "je Begriff bei Nennen und Angeben"},
+      {"schluessel": "nennenKomplex", "wert": 1, "einheit": "BE", "text": "je komplexerer Nennung, z. B. ein Zusammenhang statt eines einzelnen Begriffs"}
+    ]},
+    {"gruppe": "rechnungen", "titel": "Rechnungen", "eintraege": [
+      {"schluessel": "formel", "wert": 1, "einheit": "BE", "text": "Formel (Ansatz), wenn keine Formelsammlung zugelassen ist oder die Formel nicht darin steht"},
+      {"schluessel": "formelAusSammlung", "wert": 0, "einheit": "BE", "text": "Formel, die in der zugelassenen Formelsammlung steht"},
+      {"schluessel": "umstellen", "wert": 0.5, "einheit": "BE", "text": "Formel umstellen"},
+      {"schluessel": "umrechnen", "wert": 0.5, "einheit": "BE", "text": "je Umrechnung einer Einheit (z. B. 72 km/h = 20 m/s)"},
+      {"schluessel": "rechenschritt", "wert": 1, "einheit": "BE", "text": "je Rechenschritt: Einsetzen und Ausrechnen bis zu einem Zwischen- oder Endergebnis"},
+      {"schluessel": "gegebenGesucht", "wert": 0, "einheit": "BE", "text": "Gegeben und Gesucht"},
+      {"schluessel": "antwortsatz", "wert": 0, "einheit": "BE", "text": "Antwortsatz"},
+      {"schluessel": "einheitAbzug", "wert": 0.5, "einheit": "BE", "text": "Abzug bei fehlender oder falscher Einheit im Ergebnis, höchstens einmal je Teilaufgabe"}
+    ]},
+    {"gruppe": "diagramme", "titel": "Diagramme", "eintraege": [
+      {"schluessel": "koordinatensystem", "wert": 1, "einheit": "BE", "text": "Koordinatensystem selbst zeichnen (ist es vorgegeben: keine BE)"},
+      {"schluessel": "achse", "wert": 0.5, "einheit": "BE", "text": "je Achse: Beschriftung mit Größe und Einheit"},
+      {"schluessel": "messpunkt", "wert": 0.5, "einheit": "BE", "text": "je eingetragenem Messpunkt unterhalb der Grenze"},
+      {"schluessel": "grenzeJgst", "wert": 10, "einheit": "Jgst.", "text": "ab dieser Jahrgangsstufe gilt der nächste Wert für Messpunkte"},
+      {"schluessel": "messpunktAbGrenze", "wert": 0.25, "einheit": "BE", "text": "je Messpunkt ab der Grenze, also ½ BE je zwei Punkte (auf halbe BE abrunden)"},
+      {"schluessel": "graph", "wert": 1, "einheit": "BE", "text": "Graph zeichnen"},
+      {"schluessel": "hilfslinien", "wert": 0.5, "einheit": "BE", "text": "je Ablesung: Hilfslinien senkrecht und waagrecht zu den Achsen"},
+      {"schluessel": "ablesewert", "wert": 0.5, "einheit": "BE", "text": "je Ablesung: abgelesener Wert mit Einheit"}
+    ]}
+  ],
+  "operatoren": [
+    {"operator": "nennen, angeben", "imperativ": ["Nenne", "Gib"], "afb": "I", "erwartung": "Begriffe, Sachverhalte, Formeln, Regeln oder Daten ohne Erläuterung aufzählen bzw. wiedergeben („Gib … an“)"},
+    {"operator": "benennen", "imperativ": ["Benenne"], "afb": "I", "erwartung": "Begriffe und Sachverhalte einer vorgegebenen Struktur zuordnen"},
+    {"operator": "beschriften", "imperativ": ["Beschrifte"], "afb": "I", "erwartung": "Teile einer Abbildung, eines Aufbaus oder Diagramms mit Fachbegriffen versehen"},
+    {"operator": "zuordnen", "imperativ": ["Ordne"], "afb": "I", "erwartung": "Begriffe, Größen oder Sachverhalte einander zuweisen („Ordne … zu“)"},
+    {"operator": "ankreuzen, auswählen, eintragen, ergänzen, markieren", "imperativ": ["Kreuze", "Wähle", "Trage", "Ergänze", "Vervollständige", "Markiere"], "afb": "I", "erwartung": "Anweisungen für geschlossene Antwortformate"},
+    {"operator": "beschreiben", "imperativ": ["Beschreibe"], "afb": "I–II", "erwartung": "Sachverhalte wie Objekte und Prozesse nach Ordnungsprinzipien strukturiert unter Verwendung der Fachsprache wiedergeben"},
+    {"operator": "darstellen", "imperativ": ["Stelle"], "afb": "I–II", "erwartung": "Sachverhalte, Zusammenhänge, Methoden oder Ergebnisse strukturiert wiedergeben („Stelle … dar“)"},
+    {"operator": "skizzieren", "imperativ": ["Skizziere"], "afb": "I–II", "erwartung": "Sachverhalte, Strukturen oder Ergebnisse auf das Wesentliche reduziert übersichtlich darstellen"},
+    {"operator": "zeichnen", "imperativ": ["Zeichne"], "afb": "I–II", "erwartung": "eine möglichst exakte grafische Darstellung gegebener Strukturen oder Daten anfertigen"},
+    {"operator": "erstellen", "imperativ": ["Erstelle"], "afb": "I–II", "erwartung": "einen Sachverhalt in einer fachlich üblichen Form darstellen, z. B. Tabelle, Diagramm, Schaltplan"},
+    {"operator": "formulieren", "imperativ": ["Formuliere"], "afb": "I–II", "erwartung": "einen Sachverhalt fachlich korrekt ausdrücken, z. B. Reaktionsgleichung, Je-desto-Satz, Hypothese"},
+    {"operator": "berechnen", "imperativ": ["Berechne"], "afb": "I–II", "erwartung": "Ergebnisse aus gegebenen Werten rechnerisch generieren"},
+    {"operator": "bestimmen, ermitteln", "imperativ": ["Bestimme", "Ermittle"], "afb": "II", "erwartung": "Ergebnisse aus gegebenen Daten gewinnen, z. B. aus einem Diagramm; Lösungsweg darstellen"},
+    {"operator": "abschätzen", "imperativ": ["Schätze"], "afb": "II", "erwartung": "durch begründete Überlegungen Größenordnungen angeben („Schätze … ab“)"},
+    {"operator": "erklären", "imperativ": ["Erkläre"], "afb": "II", "erwartung": "Strukturen, Prozesse oder Zusammenhänge eines Sachverhalts erfassen und auf allgemeine Aussagen oder Gesetze zurückführen"},
+    {"operator": "erläutern", "imperativ": ["Erläutere"], "afb": "II", "erwartung": "einen Sachverhalt durch zusätzliche Informationen veranschaulichen und verständlich machen"},
+    {"operator": "begründen", "imperativ": ["Begründe"], "afb": "II–III", "erwartung": "Sachverhalte auf Regeln, Gesetzmäßigkeiten bzw. kausale Zusammenhänge zurückführen"},
+    {"operator": "vergleichen", "imperativ": ["Vergleiche"], "afb": "II", "erwartung": "Gemeinsamkeiten, Ähnlichkeiten und Unterschiede ermitteln"},
+    {"operator": "auswerten", "imperativ": ["Werte"], "afb": "II", "erwartung": "Daten oder Beobachtungen in einen Zusammenhang stellen und zu einer Gesamtaussage zusammenführen („Werte … aus“)"},
+    {"operator": "anwenden", "imperativ": ["Wende"], "afb": "II", "erwartung": "einen bekannten Zusammenhang oder eine bekannte Methode auf einen anderen Sachverhalt beziehen („Wende … an“)"},
+    {"operator": "ableiten, herleiten", "imperativ": ["Leite"], "afb": "II–III", "erwartung": "auf der Grundlage von Erkenntnissen oder Daten sachgerechte Schlüsse ziehen („Leite … ab/her“)"},
+    {"operator": "analysieren, untersuchen", "imperativ": ["Analysiere", "Untersuche"], "afb": "II–III", "erwartung": "unter einer Fragestellung wichtige Bestandteile oder Eigenschaften herausarbeiten"},
+    {"operator": "interpretieren, deuten", "imperativ": ["Interpretiere", "Deute"], "afb": "II–III", "erwartung": "Zusammenhänge im Hinblick auf Erklärungsmöglichkeiten untersuchen und abwägend herausstellen"},
+    {"operator": "vermuten", "imperativ": ["Vermute"], "afb": "II–III", "erwartung": "eine begründete Vermutung auf der Grundlage von Beobachtungen oder Aussagen formulieren"},
+    {"operator": "planen, entwickeln", "imperativ": ["Plane", "Entwickle", "Entwirf"], "afb": "III", "erwartung": "zu einem Problem eine Lösung, ein Experiment oder ein Modell erarbeiten"},
+    {"operator": "überprüfen, prüfen", "imperativ": ["Überprüfe", "Prüfe"], "afb": "III", "erwartung": "Sachverhalte oder Aussagen an Fakten oder innerer Logik messen und Widersprüche aufdecken"},
+    {"operator": "beurteilen", "imperativ": ["Beurteile"], "afb": "III", "erwartung": "zu einem Sachverhalt ein selbstständiges Urteil mit Fachwissen und Fachmethoden formulieren und begründen"},
+    {"operator": "bewerten", "imperativ": ["Bewerte"], "afb": "III", "erwartung": "einen Sachverhalt an Kriterien oder Normen messen und eine eigene Position begründet vertreten"},
+    {"operator": "diskutieren, erörtern", "imperativ": ["Diskutiere", "Erörtere"], "afb": "III", "erwartung": "Argumente zu einer Aussage oder These einander gegenüberstellen und abwägen"},
+    {"operator": "dokumentieren, protokollieren", "imperativ": ["Dokumentiere", "Protokolliere"], "afb": "I–II", "erwartung": "Vorgehen, Beobachtungen und Ergebnisse vollständig und nachvollziehbar festhalten"},
+    {"operator": "zusammenfassen", "imperativ": ["Fasse"], "afb": "I–II", "erwartung": "wesentliche Aussagen knapp und strukturiert wiedergeben („Fasse … zusammen“)"},
+    {"operator": "klassifizieren, ordnen", "imperativ": ["Klassifiziere"], "afb": "II", "erwartung": "Objekte nach Merkmalen in Gruppen einteilen"},
+    {"operator": "implementieren (Informatik)", "imperativ": ["Implementiere"], "afb": "II–III", "erwartung": "einen Algorithmus oder ein Modell in einer Programmiersprache bzw. Software umsetzen"},
+    {"operator": "modellieren (Informatik)", "imperativ": ["Modelliere"], "afb": "II–III", "erwartung": "zu einem Sachverhalt ein Modell erstellen, z. B. Klassen-, Objekt- oder Zustandsdiagramm"}
+  ],
+  "quelle": "Auswahl nach den ISB-Operatorenlisten für die Realschule (LehrplanPLUS, u. a. „Operatoren im Physikunterricht“) und der KMK-Operatorenliste für die Naturwissenschaften. Noch mit den Originallisten abzugleichen."
+}
+</script>
 <style>
 @font-face{font-family:'Lexend';font-weight:400;font-style:normal;font-display:swap;src:url(data:font/woff2;base64,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) format('woff2');}
 @font-face{font-family:'Lexend';font-weight:500;font-style:normal;font-display:swap;src:url(data:font/woff2;base64,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) format('woff2');}
@@ -162,6 +421,34 @@ body:not(.mit-gruppen) .nur-gruppen{display:none !important}
 .be-tabelle tbody tr[data-ziel]:hover td{background:var(--flaeche)}
 .warnhinweis{margin:0;padding:7px 9px;border-radius:6px;background:#FBEEEA;color:var(--loesung);font-size:12.5px;line-height:1.4}
 
+/* Prüfung im Überblick */
+.pruefung{display:flex;flex-direction:column;gap:8px}
+.p-umfang{margin:0;padding:7px 9px;border-radius:6px;font-size:12.5px;line-height:1.4;background:var(--flaeche);color:var(--gruen-dunkel)}
+.p-umfang.p-warnung,.p-umfang.p-fehler{background:#FBEEEA;color:var(--loesung)}
+.p-umfang.p-fehler{font-weight:700}
+.p-umfang.p-info{color:var(--grau)}
+.p-begruendung[hidden]{display:none}
+.p-begruendung textarea{font-family:var(--text);font-size:13px}
+.afb-tabelle{width:100%;border-collapse:collapse;font-size:12.5px}
+.afb-tabelle th{font-family:var(--titel);font-weight:500;font-size:11.5px;color:var(--grau);text-align:right;padding:2px 4px}
+.afb-tabelle td{padding:3px 4px;border-bottom:1px solid #E6ECEB;text-align:right;font-variant-numeric:tabular-nums}
+.afb-tabelle td:first-child,.afb-tabelle th:first-child{text-align:left}
+.afb-tabelle tr.p-ok td{color:var(--gruen-dunkel)}
+.afb-tabelle tr.p-warnung td{color:var(--loesung)}
+.p-liste{margin:0;padding-left:18px;font-size:12.5px;line-height:1.4;color:var(--loesung)}
+.p-liste li + li{margin-top:3px}
+.p-liste li.p-ok{color:var(--gruen-dunkel);list-style:none;margin-left:-18px}
+.p-liste li.sprung{cursor:pointer}
+.p-liste li.sprung:hover{text-decoration:underline}
+/* Bewertungsregeln */
+.regeln{border-top:1px solid #E6ECEB;padding-top:10px;margin-top:6px}
+.regeln summary{cursor:pointer;font-family:var(--titel);font-size:12px;font-weight:600;color:var(--gruen-dunkel)}
+.regeln h4{font-family:var(--titel);font-size:12px;font-weight:600;color:var(--tinte);margin:12px 0 4px}
+.regel{display:flex;align-items:center;gap:8px;padding:3px 0;font-size:12px;line-height:1.35;color:var(--grau)}
+.regel-text{flex:1;min-width:0}
+.regel-wert{flex:0 0 auto;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.regel-wert input{width:58px;font:inherit;font-size:12.5px;padding:3px 5px;border:1px solid #C5CFCD;border-radius:5px;color:var(--tinte)}
+
 .buehne{flex:1;overflow:auto;padding:24px 24px 60px;display:flex;flex-direction:column;align-items:center;gap:24px}
 
 .meldung{
@@ -299,6 +586,32 @@ body.eine-seite .seitenzahl-erste{display:none}
 .teil .t-bu{flex:0 0 5.5mm;font-family:var(--titel);font-weight:600;font-size:11pt;color:var(--petrol)}
 .teil .fliess{flex:1;min-width:0}
 .teil .be-ort{padding-left:3mm}
+/* Anforderungsbereich: steht nur in der Lösungsfassung vor den BE (in der Schülerfassung bleibt der Platz frei) */
+.afb-ort{flex:0 0 auto;font-family:var(--titel);font-size:8pt;font-weight:500;white-space:nowrap;padding-left:3mm}
+.afb-ort:empty{display:none}
+.aufgabe-kopf .afb-ort{margin-left:auto}
+.aufgabe-kopf .afb-ort:not(:empty) + .be-ort{margin-left:0}
+
+/* Haken der Musterlösung: [✓] = 1 BE, [½] = ½ BE (Haken mit Strich). Nur in der Lösungsfassung sichtbar. */
+.hk,.hkv,.hkh{display:inline-block;background-repeat:no-repeat;background-position:center;background-size:contain}
+.hk{width:1.05em;height:0.95em;vertical-align:-0.12em;margin:0 0.1em}
+.hk-voll,.hkv{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 11'%3E%3Cpath d='M1.2 6.2 4.3 9.4 10.8 1.6' fill='none' stroke='%23B4462B' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+.hk-halb,.hkh{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 11'%3E%3Cpath d='M1.2 6.2 4.3 9.4 10.8 1.6M6.1 4.3 9 6.7' fill='none' stroke='%23B4462B' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+body.fassung-schueler .hk,body.fassung-schueler .hkv,body.fassung-schueler .hkh{visibility:hidden}
+/* Prüfung der Haken: Summe ≠ BE, nur am Bildschirm im rechten Rand */
+.hk-pruefung{position:absolute;right:-14.5mm;top:0.6mm;width:13mm;font-family:var(--titel);font-size:7pt;line-height:1.25;
+  color:#fff;background:var(--loesung);border-radius:1mm;padding:0.6mm 1mm;text-align:center;display:none}
+body.fassung-loesung .hk-pruefung.an{display:block}
+
+/* Lösungstext: Schülerfassung = Platz zum Schreiben, Lösungsfassung = Text */
+.loesungstext{color:var(--loesung)}
+.loesungstext .katex{color:var(--loesung)}
+
+/* „Viel Erfolg!“ am Ende; passt es nicht mehr auf die Seite, steht es im unteren Rand –
+   7 mm über der Blattkante wie die Seitenzahl auf Seite 1 */
+.schluss{font-family:var(--titel);font-weight:500;font-size:11pt;color:var(--petrol);text-align:center;padding-top:5mm}
+.schluss.im-rand{position:absolute;left:0;right:0;bottom:-8mm;padding:0}
+.schluss .begruendung{display:block;font-family:var(--text);font-weight:400;font-size:9.5pt;color:var(--loesung);text-align:left}
 
 .merke{border-left:1.2mm solid var(--petrol);background:var(--flaeche);padding:2.5mm 4mm 3mm;border-radius:0 2mm 2mm 0}
 .merke.koralle{border-color:var(--koralle);background:#FBEEEA}
@@ -414,7 +727,7 @@ body.fassung-schueler .nur-loesung{visibility:hidden}
 @page{size:A4 portrait;margin:0}
 @media print{
   html,body{height:auto;background:#fff;display:block;width:210mm}
-  .leiste,.seitenleiste,.meldung,.werkzeug,.warnung,.leer-seite,.umbruch,.bild-leer,.leer-formel,.nur-bildschirm{display:none !important}
+  .leiste,.seitenleiste,.meldung,.werkzeug,.warnung,.leer-seite,.umbruch,.bild-leer,.leer-formel,.nur-bildschirm,.hk-pruefung{display:none !important}
   .arbeit,.buehne{display:block;overflow:visible;padding:0;height:auto}
   .seite{margin:0;box-shadow:none;break-after:page;page-break-after:always}
   .seite:last-child{break-after:auto;page-break-after:auto}
@@ -429,7 +742,7 @@ body.fassung-schueler .nur-loesung{visibility:hidden}
 
 
 <header class="leiste">
-  <h1>Leistungsnachweis-Editor <span class="stand">Fassung 2</span></h1>
+  <h1>Leistungsnachweis-Editor <span class="stand">Fassung 3</span></h1>
   <button class="knopf" id="k-neu" type="button">Neu</button>
   <button class="knopf" id="k-oeffnen" type="button">Öffnen …</button>
   <button class="knopf" id="k-speichern" type="button">Speichern</button>
@@ -783,10 +1096,26 @@ var Formel = (function(){
     return null;
   };
 
+  // Haken der Musterlösung: [✓] = 1 BE, [½] = ½ BE. Sie werden aus der Zeile gelöst und
+  // hinter die Formel gesetzt; das Zeichen selbst kommt aus dem CSS (.hkv, .hkh).
+  var HAKEN = /\s*\[(✓|✔|½|1\/2)\]/g;
+  function hakenTex(s){
+    var t = '';
+    String(s).replace(HAKEN, function(_, w){
+      t += '\\htmlClass{' + (w === '½' || w === '1/2' ? 'hkh' : 'hkv') + '}{\\phantom{\\checkmark}}';
+      return '';
+    });
+    return t ? '\\quad' + t : '';
+  }
+  function ohneHaken(s){ return String(s).replace(HAKEN, '').trim(); }
+
   function umwandeln(s, opt){
     if(!s || !s.trim()) return '';
+    var hk = hakenTex(s);
+    s = ohneHaken(s);
+    if(!s) return hk;
     var p = new Parser(zerlegen(s), opt);
-    return p.kette(null);
+    return p.kette(null) + hk;
   }
 
   // Zeile an der ersten Relation (außerhalb von Klammern) teilen
@@ -812,14 +1141,21 @@ var Formel = (function(){
     opt = opt || {};
     var zeilen = String(text || '').split('\n').map(function(z){ return z.trim(); }).filter(Boolean);
     if(!zeilen.length) return '';
-    if(opt.latex) return zeilen.length > 1 ? '\\begin{gathered}' + zeilen.join('\\\\') + '\\end{gathered}' : zeilen[0];
+    if(opt.latex){
+      var roh = zeilen.map(function(z){ return ohneHaken(z) + hakenTex(z); });
+      return roh.length > 1 ? '\\begin{gathered}' + roh.join('\\\\') + '\\end{gathered}' : roh[0];
+    }
     var teile = zeilen.map(function(z, idx){
+      // Haken stehen hinter der Zeile, außerhalb der Unterstreichung des Ergebnisses
+      var hk = hakenTex(z);
+      z = ohneHaken(z);
       var letzte = idx === zeilen.length - 1;
       var u = function(t){ return (letzte && opt.ergebnis) ? '\\underline{\\underline{' + t + '}}' : t; };
+      if(!z) return {ohne:true, tex:hk};
       var tl = teilen(z);
-      if(!tl) return {ohne:true, tex:u(umwandeln(z))};
+      if(!tl) return {ohne:true, tex:u(umwandeln(z)) + hk};
       var links = umwandeln(tl.links), rechts = umwandeln(tl.rechts);
-      return {tex: links + ' &' + tl.rel + ' ' + u(rechts)};
+      return {tex: links + ' &' + tl.rel + ' ' + u(rechts) + hk};
     });
     if(teile.length === 1) return teile[0].tex.replace(' &', ' ');
     return '\\begin{aligned}' + teile.map(function(t){ return t.ohne ? '&' + t.tex : t.tex; }).join('\\\\[0.35em]') + '\\end{aligned}';
@@ -858,11 +1194,43 @@ function kopie(o){ return JSON.parse(JSON.stringify(o)); }
 // und teilen sich dann den Speicher des Browsers – sie dürfen sich nicht gegenseitig überschreiben.
 var SPEICHER = 'wrs-leistungsnachweis-v1';
 var EDITOR = 'leistungsnachweis';
-var STAND = 2;   // Fassung dieses Editors; Dateien merken sich, womit sie gebaut wurden
+var STAND = 3;   // Fassung dieses Editors; Dateien merken sich, womit sie gebaut wurden
 var BASIS = 5;   // Fassung des Arbeitsblatt-Editors, dessen Bausteine hier alle laufen
 function leererZustand(){
   return {version:1, editor:EDITOR, stand:STAND, modus:'gestalten', fassung:'schueler', gruppen:false, gruppe:'A',
-    kopf:standardKopf(), trim:true, bloecke:[], uploads:[]};
+    kopf:standardKopf(), regeln:standardRegeln(), trim:true, bloecke:[], uploads:[]};
+}
+
+/* ================= Regelwerk =================
+   Die Regeln für Aufgaben und Musterlösungen stehen am Anfang der Datei: als Text für
+   KI-Assistenten im Kommentar und als Zahlen im JSON-Block #regelwerk. Der Editor liest
+   die Zahlen von dort; jede Datei speichert die Werte, die für sie gelten, in Z.regeln. */
+var REGELWERK = JSON.parse(document.getElementById('regelwerk').textContent);
+var REGELN_EIGENE = 'wrs-leistungsnachweis-regeln';   // eigene Standardwerte der Lehrkraft
+function regelnAusWerkseinstellung(){
+  var r = {};
+  REGELWERK.werte.forEach(function(g){
+    r[g.gruppe] = {};
+    g.eintraege.forEach(function(e){ r[g.gruppe][e.schluessel] = e.wert; });
+  });
+  return r;
+}
+// Nur bekannte Schlüssel mit Zahlen übernehmen, alles andere bleibt beim Ausgangswert
+function regelnMischen(basis, quelle){
+  var r = kopie(basis);
+  if(quelle && typeof quelle === 'object') Object.keys(r).forEach(function(g){
+    if(!quelle[g] || typeof quelle[g] !== 'object') return;
+    Object.keys(r[g]).forEach(function(s){
+      var v = Number(quelle[g][s]);
+      if(quelle[g][s] !== '' && quelle[g][s] != null && isFinite(v)) r[g][s] = v;
+    });
+  });
+  return r;
+}
+function standardRegeln(){
+  var eigene = null;
+  try{ eigene = JSON.parse(localStorage.getItem(REGELN_EIGENE)); }catch(e){}
+  return regelnMischen(regelnAusWerkseinstellung(), eigene);
 }
 var Z = leererZustand();
 var elemente = new Map();      // Block-ID → DOM-Element
@@ -883,7 +1251,7 @@ var merken = spaeter(lokalSpeichern, 700);
 /* ================= Kopf des Leistungsnachweises ================= */
 // [Schlüssel, Bezeichnung, übliche Bearbeitungszeit in Minuten]
 var NACHWEISE = [
-  ['stegreifaufgabe', 'Stegreifaufgabe', 20],
+  ['stegreifaufgabe', 'Stegreifaufgabe', 15],
   ['kurzarbeit', 'Kurzarbeit', 30],
   ['schulaufgabe', 'Schulaufgabe', 45],
   ['nachholschulaufgabe', 'Nachholschulaufgabe', 45]
@@ -908,8 +1276,8 @@ var HINWEISE = [
 ];
 
 function standardKopf(){
-  return {art:'stegreifaufgabe', nr:1, fach:'', fachFrei:false, klasse:'', datum:'', zeit:20,
-    hilfsmittel:[], hinweise:['sauber'], eigenerHinweis:''};
+  return {art:'stegreifaufgabe', nr:1, fach:'', fachFrei:false, klasse:'', datum:'', zeit:15,
+    hilfsmittel:[], hinweise:['sauber'], eigenerHinweis:'', umfangBegruendung:'', vielErfolg:true};
 }
 // Fachbezogene Hinweise passend zum Fach an- bzw. abwählen, die übrigen bleiben, wie sie sind
 function hinweiseFuerFach(fach, liste){
@@ -925,10 +1293,11 @@ function hinweiseFuerFach(fach, liste){
 // Kopf aus einer Datei übernehmen; Arbeitsblätter bringen höchstens ihr Fach mit
 function kopfAusDatei(d){
   var k = Object.assign(standardKopf(), d && d.kopf ? d.kopf : {});
-  ['fach', 'klasse', 'datum', 'eigenerHinweis'].forEach(function(f){ k[f] = String(k[f] || ''); });
+  ['fach', 'klasse', 'datum', 'eigenerHinweis', 'umfangBegruendung'].forEach(function(f){ k[f] = String(k[f] || ''); });
   k.nr = Number(k.nr) || 0;
   k.zeit = Number(k.zeit) || 0;
   k.fachFrei = !!k.fachFrei;
+  k.vielErfolg = k.vielErfolg !== false;
   if(!Array.isArray(k.hilfsmittel)) k.hilfsmittel = [];
   if(!Array.isArray(k.hinweise)) k.hinweise = standardKopf().hinweise;
   if(!(d && d.kopf) && d && d.fach){
@@ -995,7 +1364,7 @@ function kopfZeichnen(){
   if(k.eigenerHinweis.trim()) liste.push(k.eigenerHinweis.trim());
   $('#k-hinweise').replaceChildren(neu('ul', null, liste.map(function(t){ return neu('li', {text:t}); })));
 }
-function kopfGeaendert(){ kopfZeichnen(); geaendert(); }
+function kopfGeaendert(){ kopfZeichnen(); pruefungAktualisieren(); geaendert(); }
 
 // Einstellungen des Kopfs in der Seitenleiste (beim Gestalten im Überblick, sonst unter den Seiten)
 function kopfEinstellungen(root){
@@ -1071,6 +1440,9 @@ function kopfEinstellungen(root){
   p.feld('Hinweise vor den Aufgaben', [
     neu('p', {'class':'hilfe', style:'margin:0', text:'Der Hinweis zu digitalen Geräten und Unterschleif steht immer da.'})
   ].concat(HINWEISE.map(function(h){ return haken('hinweise', h[0], h[1], true); }), [eh]), true);
+  var ve = neu('input', {type:'checkbox', checked:k.vielErfolg});
+  ve.addEventListener('change', function(){ k.vielErfolg = ve.checked; kopfGeaendert(); });
+  box.append(neu('label', {'class':'haken'}, [ve, document.createTextNode('„Viel Erfolg!“ am Ende')]));
   p.hinweis('Klasse oder Datum leer lassen: Auf dem Blatt steht dann eine Linie zum Eintragen. '
     + 'Rechts im Kopf zählt der Editor die BE aller Aufgaben zusammen.');
 }
@@ -1086,14 +1458,57 @@ function uploadKopfBauen(){
 }
 
 /* ================= Formeln ================= */
+// Erlaubt ist nur \htmlClass – damit stehen die Haken der Musterlösung in Formeln
+function nurHtmlClass(k){ return k.command === '\\htmlClass'; }
 function tex(t, display, fleqn){
   if(!t) return '';
-  try{ return katex.renderToString(t, {displayMode:!!display, fleqn:!!fleqn, throwOnError:false, strict:'ignore'}); }
+  try{ return katex.renderToString(t, {displayMode:!!display, fleqn:!!fleqn, throwOnError:false, strict:'ignore', trust:nurHtmlClass}); }
   catch(e){ return '<span class="fehler">' + esc(e.message) + '</span>'; }
 }
 function texPruefen(t){
-  try{ katex.renderToString(t, {throwOnError:true, strict:'ignore'}); return null; }
+  try{ katex.renderToString(t, {throwOnError:true, strict:'ignore', trust:nurHtmlClass}); return null; }
   catch(e){ return e.message.replace(/^KaTeX parse error: /, ''); }
+}
+
+/* ================= Haken der Musterlösung =================
+   [✓] = 1 BE, [½] = ½ BE (gedruckt als Haken mit Strich). Sie stehen genau dort, wo die BE
+   vergeben wird, und erscheinen nur in der Lösungsfassung. */
+var HAKEN_ZEICHEN = /\[(✓|✔|½|1\/2)\]/;
+function hakenWert(z){ return z === '½' || z === '1/2' ? 0.5 : 1; }
+function hakenSumme(text){
+  var s = 0;
+  String(text || '').replace(/\[(✓|✔|½|1\/2)\]/g, function(_, z){ s += hakenWert(z); return _; });
+  return s;
+}
+// Haken in allen Textfeldern eines Bausteins (Bilddaten werden übersprungen)
+function hakenImBaustein(b){
+  var s = 0;
+  (function gehe(v, k){
+    if(typeof v === 'string'){ if(k !== 'src' && v.indexOf('[') >= 0) s += hakenSumme(v); }
+    else if(Array.isArray(v)) v.forEach(function(x){ gehe(x); });
+    else if(v && typeof v === 'object') Object.keys(v).forEach(function(kk){ gehe(v[kk], kk); });
+  })(b);
+  return s;
+}
+// [✓]/[½] in HTML durch das Zeichen ersetzen – nur in Textknoten, damit kein Tag zerbricht
+function hakenEinsetzen(html){
+  if(!HAKEN_ZEICHEN.test(html)) return html;
+  var box = document.createElement('div');
+  box.innerHTML = html;
+  var gang = document.createTreeWalker(box, NodeFilter.SHOW_TEXT), knoten = [], n;
+  while((n = gang.nextNode())) if(HAKEN_ZEICHEN.test(n.nodeValue)) knoten.push(n);
+  knoten.forEach(function(k){
+    var frag = document.createDocumentFragment();
+    k.nodeValue.split(/(\[(?:✓|✔|½|1\/2)\])/).forEach(function(t){
+      var m = /^\[(✓|✔|½|1\/2)\]$/.exec(t);
+      if(m){
+        var halb = hakenWert(m[1]) === 0.5;
+        frag.append(neu('span', {'class':'hk ' + (halb ? 'hk-halb' : 'hk-voll'), title: halb ? '½ BE' : '1 BE', contenteditable:'false'}));
+      } else if(t) frag.append(document.createTextNode(t));
+    });
+    k.parentNode.replaceChild(frag, k);
+  });
+  return box.innerHTML;
 }
 // $…$ im Text als Formel darstellen
 function inlineMathe(html){
@@ -1127,9 +1542,11 @@ function editierbar(node, o){
   node.classList.add('ed');
   if(o.platzhalter) node.dataset.platzhalter = o.platzhalter;
   var punkt = null;
+  // Formeln ($…$) und Haken ([✓], [½]) werden angezeigt; beim Bearbeiten steht wieder der Rohtext da
+  function besonders(v){ return v.indexOf('$') >= 0 || HAKEN_ZEICHEN.test(v); }
   function anzeigen(){
     var v = o.get() || '';
-    node.innerHTML = (o.mathe && v.indexOf('$') >= 0) ? inlineMathe(v) : v;
+    node.innerHTML = o.mathe ? hakenEinsetzen(v.indexOf('$') >= 0 ? inlineMathe(v) : v) : v;
     node.dataset.roh = '0';
   }
   node.addEventListener('mousedown', function(e){ punkt = {x:e.clientX, y:e.clientY}; });
@@ -1137,7 +1554,7 @@ function editierbar(node, o){
     if(node.dataset.roh === '1') return;
     var v = o.get() || '';
     node.dataset.roh = '1';
-    if(o.mathe && v.indexOf('$') >= 0){
+    if(o.mathe && besonders(v)){
       node.innerHTML = v;
       requestAnimationFrame(function(){
         if(document.activeElement !== node) return;   // Fokus ist inzwischen woanders
@@ -1219,15 +1636,16 @@ TYPEN.text = {
    Nachbarn ab (Teilaufgaben, Gruppe) und nicht nur vom Baustein selbst. */
 TYPEN.aufgabe = {
   name:'Aufgabe',
-  neu:function(){ return {html:'', punkte:0}; },
+  neu:function(){ return {html:'', punkte:0, afb:''}; },
   zeichnen:function(b, box){
     var kopf = neu('div', {'class':'aufgabe-kopf'}, [
       neu('span', {'class':'a-nr', text:'Aufgabe'}),
+      neu('span', {'class':'afb-ort nur-loesung'}),
       neu('span', {'class':'be-ort'})
     ]);
     var d = neu('div', {'class':'fliess'});
     editierbar(d, {get:function(){ return b.html; }, set:function(v){ b.html = v; }, mathe:true, platzhalter:'Aufgabenstellung eingeben …'});
-    box.append(kopf, d);
+    box.append(kopf, d, neu('span', {'class':'hk-pruefung'}));
   },
   panel:function(b, p){
     var a = struktur().info[b.id];
@@ -1235,28 +1653,83 @@ TYPEN.aufgabe = {
       p.hinweis('<b>' + beText(a.summe) + ' BE</b> aus den Teilaufgaben ('
         + a.teile.filter(function(t){ return Number(t.b.punkte) > 0; })
             .map(function(t){ return t.buchstabe + ') ' + beText(t.b.punkte); }).join(' + ')
-        + '). Die BE stellst du bei den Teilaufgaben ein.');
+        + '). Die BE und den Anforderungsbereich stellst du bei den Teilaufgaben ein.');
+      auftragPanel(b, p, false, false);
     } else {
       p.zahl('Bewertungseinheiten (0 = keine Angabe)', 'punkte', {min:0, max:60, step:0.5});
+      auftragPanel(b, p, true, !(a && a.teile.length));
     }
     textPanel(p);
-    p.hinweis('Aufgaben werden automatisch durchnummeriert. Teilaufgaben a), b), c) fügst du direkt dahinter ein.');
+    p.hinweis('Aufgaben werden automatisch durchnummeriert. Teilaufgaben a), b), c) fügst du direkt dahinter ein. '
+      + 'Ein einleitender Text darf vor dem Arbeitsauftrag stehen.');
   }
 };
 
 TYPEN.teilaufgabe = {
   name:'Teilaufgabe',
-  neu:function(){ return {html:'', punkte:0}; },
+  neu:function(){ return {html:'', punkte:0, afb:''}; },
   zeichnen:function(b, box){
     var d = neu('div', {'class':'fliess'});
     editierbar(d, {get:function(){ return b.html; }, set:function(v){ b.html = v; }, mathe:true, platzhalter:'Teilaufgabe eingeben …'});
-    box.append(neu('div', {'class':'teil'}, [neu('span', {'class':'t-bu', text:'a)'}), d, neu('span', {'class':'be-ort'})]));
+    box.append(neu('div', {'class':'teil'}, [neu('span', {'class':'t-bu', text:'a)'}), d,
+      neu('span', {'class':'afb-ort nur-loesung'}), neu('span', {'class':'be-ort'})]), neu('span', {'class':'hk-pruefung'}));
   },
   panel:function(b, p){
     p.zahl('Bewertungseinheiten (0 = keine Angabe)', 'punkte', {min:0, max:60, step:0.5});
+    auftragPanel(b, p, true, true);
     textPanel(p);
     p.hinweis('Teilaufgaben werden in jeder Aufgabe mit a), b), c) … beschriftet. '
       + 'Ihre BE zählt die Aufgabe darüber automatisch zusammen.');
+  }
+};
+
+// Anforderungsbereich wählen und den Arbeitsauftrag prüfen (Operator, keine Frage).
+// mitAfb: Der Baustein trägt BE (Teilaufgabe bzw. Aufgabe ohne Teilaufgaben mit BE).
+// operatorPflicht: Hier steht der Arbeitsauftrag selbst – bei Aufgaben mit Teilaufgaben nur ein einleitender Text.
+function auftragPanel(b, p, mitAfb, operatorPflicht){
+  if(mitAfb) p.auswahl('Anforderungsbereich', 'afb', [['', '– noch nicht festgelegt –'], ['I', 'AFB I – Reproduktion'],
+    ['II', 'AFB II – Reorganisation und Transfer'], ['III', 'AFB III – Reflexion und Problemlösen']]);
+  var info = neu('div', {'class':'auftrag-info', 'data-pflicht': operatorPflicht ? '1' : ''});
+  p.root.append(info);
+  auftragInfo(info, b);
+}
+// Inhalt neu aufbauen – auch während des Tippens (aus planen() heraus)
+function auftragInfo(info, b){
+  var a = auftragPruefen(b.html), pflicht = info.dataset.pflicht === '1';
+  info.replaceChildren();
+  if(pflicht && a.operator){
+    info.append(neu('p', {'class':'hilfe', style:'margin:0', html:'Operator <b>' + esc(a.operator.wort) + '</b> ('
+      + esc(a.operator.eintrag.operator) + ', üblich AFB ' + esc(a.operator.eintrag.afb) + '): '
+      + esc(a.operator.eintrag.erwartung) + '.'}));
+  } else if(pflicht && !a.leer){
+    info.append(neu('p', {'class':'warnhinweis', text:'Kein Operator erkannt. Der Arbeitsauftrag beginnt mit einem Operator, '
+      + 'z. B. „Berechne …“, „Begründe …“, „Nenne …“.'}));
+  }
+  if(a.frage) info.append(neu('p', {'class':'warnhinweis', text:'Der Text enthält ein Fragezeichen. Arbeitsaufträge sind '
+    + 'Aufforderungen mit Operator, keine Fragen.'}));
+}
+
+TYPEN.loesung = {
+  name:'Lösung',
+  neu:function(){ return {html:'', platz:'linien', hoehe:3}; },
+  zeichnen:function(b, box){
+    // Schülerfassung: Platz zum Schreiben; Lösungsfassung: die Musterlösung, mindestens so hoch wie dieser Platz
+    if(Z.fassung !== 'loesung'){ if(b.platz !== 'kein') box.append(platzFeld(b.platz, b.hoehe)); return; }
+    var d = neu('div', {'class':'fliess loesungstext', style: b.platz === 'kein' ? '' : 'min-height:' + b.hoehe + 'cm'});
+    editierbar(d, {get:function(){ return b.html; }, set:function(v){ b.html = v; }, mathe:true,
+      platzhalter:'Musterlösung eingeben … Haken: [✓] = 1 BE, [½] = ½ BE'});
+    box.append(d, neu('span', {'class':'hk-pruefung platz-pruefung'}));
+  },
+  panel:function(b, p){
+    if(Z.fassung !== 'loesung'){
+      p.hinweis('Die Musterlösung schreibst du in der <b>Lösungsfassung</b> direkt aufs Blatt. In der Schülerfassung steht hier der Platz zum Schreiben.');
+      p.knoepfe([['Zur Lösungsfassung', function(){ fassungSetzen('loesung'); }]]);
+    }
+    p.auswahl('Platz in der Schülerfassung', 'platz', [['linien', 'Schreiblinien'], ['karo', 'Karofeld'], ['leer', 'Freier Platz'], ['kein', 'Kein Platz']]);
+    if(b.platz !== 'kein') p.zahl('Höhe des Platzes', 'hoehe', {min:0.5, max:24, step:0.5, einheit:'cm'});
+    if(Z.fassung === 'loesung') textPanel(p);
+    p.hinweis('Jede BE steht als Haken genau an der Stelle, für die sie vergeben wird: <code>[✓]</code> = 1 BE, '
+      + '<code>[½]</code> = ½ BE (Haken mit Strich). Bei Begründungen: 1 BE je fachlichem Aspekt in Fachsprache.');
   }
 };
 
@@ -1680,7 +2153,7 @@ TYPEN.rechnung = {
     }
     var w = Formel.block(b.weg, {ergebnis:b.ergebnis});
     if(w) r.append(neu('span', {'class':'r-lab oben', text:'Lösung:'}), neu('div', {'class':'r-weg', html:tex(w, true, true)}));
-    if(b.antwort.trim()) r.append(neu('span', {'class':'r-lab', text:'Antwort:'}), neu('div', {html:inlineMathe(esc(b.antwort))}));
+    if(b.antwort.trim()) r.append(neu('span', {'class':'r-lab', text:'Antwort:'}), neu('div', {html:hakenEinsetzen(inlineMathe(esc(b.antwort)))}));
     if(!r.children.length){ box.append(neu('div', {'class':'formel leer-formel', text:'Rechnung – rechts eingeben'})); return; }
     box.append(r);
   },
@@ -1707,6 +2180,10 @@ function flaechenArt(b){
   if(b.typ === 'linien') return 'linien-' + b.abstand;
   if(b.typ === 'rechnung' && b.nurLoesung && Z.fassung !== 'loesung'){
     if(b.platz === 'karo' || b.platz === 'geruest') return 'karo';
+    if(b.platz === 'linien') return 'linien-9';
+  }
+  if(b.typ === 'loesung' && Z.fassung !== 'loesung'){
+    if(b.platz === 'karo') return 'karo';
     if(b.platz === 'linien') return 'linien-9';
   }
   return null;
@@ -2594,6 +3071,7 @@ var MENUE = [
   ['text', 'Text', '¶'],
   ['aufgabe', 'Aufgabe', '1.'],
   ['teilaufgabe', 'Teilaufgabe', 'a)'],
+  ['loesung', 'Lösung', '✓'],
   ['merke', 'Merkkasten', '!'],
   ['bild', 'Bild', '▣'],
   ['gitter', 'Bildergitter', '▒'],
@@ -2686,7 +3164,8 @@ Panel.prototype.palette = function(){
     ['≈', ' ~= ', 'ungefähr'], ['⇒', ' => ', 'Folgepfeil'], ['±', '+-', 'plus/minus'],
     ['Δ', 'Delta ', 'Delta'], ['ρ', 'rho ', 'rho'], ['λ', 'lambda ', 'lambda'], ['η', 'eta ', 'eta'],
     ['φ', 'phi ', 'phi'], ['ω', 'omega ', 'omega'], ['α', 'alpha ', 'alpha'], ['π', 'pi ', 'pi'],
-    ['°C', ' °C', 'Grad Celsius'], ['Ω', ' Ohm', 'Ohm'], ['10ⁿ', ' * 10^', 'Zehnerpotenz'], ['„T“', '""', 'normaler Text', 1]];
+    ['°C', ' °C', 'Grad Celsius'], ['Ω', ' Ohm', 'Ohm'], ['10ⁿ', ' * 10^', 'Zehnerpotenz'], ['„T“', '""', 'normaler Text', 1],
+    ['✓ 1', ' [✓]', 'Haken der Musterlösung: 1 BE (ans Zeilenende)'], ['✓ ½', ' [½]', 'Haken der Musterlösung: ½ BE (ans Zeilenende)']];
   var reihe = neu('div', {'class':'knopfreihe palette'});
   P.forEach(function(x){
     reihe.append(neu('button', {type:'button', text:x[0], title:x[2],
@@ -2766,6 +3245,16 @@ Panel.prototype.format = function(){
       einfuegenText('$$');
       getSelection().modify('move', 'backward', 'character');
     }}));
+  // Haken der Musterlösung: stehen direkt hinter dem Aspekt, für den es die BE gibt
+  [['✓ 1 BE', '[✓]', 'Haken: 1 BE'], ['✓ ½ BE', '[½]', 'Haken mit Strich: ½ BE']].forEach(function(x){
+    r.append(neu('button', {type:'button', text:x[0], title:x[2] + ' – erscheint nur in der Lösungsfassung',
+      onmousedown:function(e){ e.preventDefault(); },
+      onclick:function(){
+        var a = document.activeElement;
+        if(!a || !a.classList.contains('ed')){ meldung('Zuerst in den Text klicken.'); return; }
+        einfuegenText(' ' + x[1]);
+      }}));
+  });
   this.feld('Formatieren', [r], true);
 };
 Panel.prototype.hilfe = function(){
@@ -2803,6 +3292,161 @@ function panelBauen(){
 
 // Überblick, solange kein Baustein gewählt ist: Gruppen und BE je Aufgabe
 function ueberblickBauen(p){
+  pruefungBereich(p);
+  gruppenUndBe(p);
+  regelnEinstellungen(p);
+}
+
+/* ================= Prüfung aus Sicht der Fachschaftsleitung =================
+   Umfang zur Bearbeitungszeit, Anteile der Anforderungsbereiche, Arbeitsaufträge mit Operator,
+   Haken der Musterlösung gegen die BE. Die Werte kommen aus Z.regeln. */
+function umfangPruefen(gesamt){
+  var r = Z.regeln.umfang, zeit = Number(Z.kopf.zeit) || 0;
+  if(!(zeit > 0)) return {stufe:'info', text:'Ohne Bearbeitungszeit im Kopf lässt sich der Umfang nicht prüfen.'};
+  var soll = zeit * r.beJeMinute;
+  var von = Math.floor(soll * (1 - r.spielraum / 100)), bis = Math.ceil(soll * (1 + r.spielraum / 100));
+  var max = Math.ceil(soll * (1 + r.mitBegruendung / 100));
+  var basis = beText(gesamt) + ' BE bei ' + zeit + ' Minuten';
+  if(!(gesamt > 0)) return {stufe:'info', text:'Noch keine BE vergeben. Bei ' + zeit + ' Minuten sind ' + von + '–' + bis + ' BE üblich.'};
+  if(gesamt < von) return {stufe:'warnung', text:basis + ' – weniger als üblich (' + von + '–' + bis + ' BE).'};
+  if(gesamt <= bis) return {stufe:'ok', text:basis + ' – passt (' + von + '–' + bis + ' BE).'};
+  if(gesamt <= max) return {stufe: Z.kopf.umfangBegruendung.trim() ? 'ok' : 'warnung', begruendung:true,
+    text:basis + ' – mehr als üblich (' + von + '–' + bis + ' BE). Bis ' + max + ' BE nur mit Begründung.'};
+  return {stufe:'fehler', begruendung:true, text:basis + ' – zu viele BE: höchstens ' + max + ' BE, auch mit Begründung.'};
+}
+function pruefungen(){
+  var s = struktur(), liste = [], traeger = [];
+  function name(a, t){ return (a ? 'Aufgabe ' + a.nr : 'Teilaufgabe') + (t ? ' ' + t.buchstabe + ')' : ''); }
+  function frage(x, n){ if(auftragPruefen(x.b.html).frage) liste.push({ziel:x.b.id, text:n + ': Frage statt Arbeitsauftrag (Fragezeichen)'}); }
+  function operatorPruefen(x, n){
+    var a = auftragPruefen(x.b.html);
+    if(a.leer) liste.push({ziel:x.b.id, text:n + ': noch kein Arbeitsauftrag'});
+    else if(!a.operator) liste.push({ziel:x.b.id, text:n + ': kein Operator am Satzanfang'});
+  }
+  s.aufgaben.forEach(function(a){
+    frage(a, name(a));
+    a.teile.forEach(function(t){ frage(t, name(a, t)); });
+    if(a.ausTeilen){
+      if(s.hakenGesamt > 0 && a.haken > 0) liste.push({ziel:a.b.id, text:name(a) + ': Haken vor der ersten Teilaufgabe'});
+      a.teile.forEach(function(t){ traeger.push({x:t, name:name(a, t), operator:true}); });
+    } else {
+      // BE an der Aufgabe selbst: Arbeitsaufträge stehen dann in den Teilaufgaben ohne eigene BE
+      traeger.push({x:a, name:name(a), operator:!a.teile.length});
+      a.teile.forEach(function(t){ operatorPruefen(t, name(a, t)); });
+    }
+  });
+  s.lose.forEach(function(t){ frage(t, name(null, t)); traeger.push({x:t, name:name(null, t), operator:true}); });
+  traeger.forEach(function(e){
+    var x = e.x;
+    if(e.operator) operatorPruefen(x, e.name);
+    if(!(x.soll > 0)) liste.push({ziel:x.b.id, text:e.name + ': keine BE'});
+    if(!x.b.afb) liste.push({ziel:x.b.id, text:e.name + ': kein Anforderungsbereich'});
+    if(s.hakenGesamt > 0 && Math.abs(x.ist - x.soll) > 1e-9)
+      liste.push({ziel:x.b.id, text:e.name + ': Haken ergeben ' + beText(x.ist) + ' BE, vergeben sind ' + beText(x.soll) + ' BE'});
+  });
+  if(s.hakenVorher > 0) liste.push({text:'Haken vor der ersten Aufgabe gehören zu keiner Aufgabe (' + beText(s.hakenVorher) + ' BE).'});
+  if(traeger.length && s.hakenGesamt === 0) liste.push({text:'Die Musterlösung hat noch keine Haken ([✓] = 1 BE, [½] = ½ BE).'});
+  return {s:s, liste:liste};
+}
+function pruefungBereich(p){
+  p.abschnitt('Prüfung' + (Z.gruppen ? ' (Gruppe ' + Z.gruppe + ')' : ''));
+  var box = neu('div', {'class':'pruefung', id:'pruefung'}, [
+    neu('p', {'class':'p-umfang'}),
+    neu('label', {'class':'feld p-begruendung'}, [neu('span', {text:'Begründung für den Umfang (steht in der Musterlösung)'})]),
+    neu('div', {'class':'p-afb'}),
+    neu('ul', {'class':'p-liste'})
+  ]);
+  var ta = neu('textarea', {rows:2, placeholder:'z. B. Viele kurze Nennungen, die schnell zu beantworten sind.'});
+  ta.value = Z.kopf.umfangBegruendung;
+  ta.addEventListener('input', function(){ Z.kopf.umfangBegruendung = ta.value; pruefungAktualisieren(); geaendert(); });
+  $('.p-begruendung', box).append(ta);
+  p.root.append(box);
+  pruefungAktualisieren();
+}
+// Nur die wechselnden Teile neu aufbauen – das Eingabefeld für die Begründung bleibt stehen
+function pruefungAktualisieren(){
+  var box = $('#pruefung');
+  if(!box) return;
+  var pr = pruefungen(), s = pr.s, r = Z.regeln.afb;
+  var u = umfangPruefen(s.gesamt);
+  var um = $('.p-umfang', box);
+  um.className = 'p-umfang p-' + u.stufe;
+  um.textContent = u.text;
+  $('.p-begruendung', box).hidden = !(u.begruendung || Z.kopf.umfangBegruendung.trim());
+
+  var afb = $('.p-afb', box);
+  afb.replaceChildren();
+  if(s.gesamt > 0){
+    var t = neu('table', {'class':'afb-tabelle'}, [neu('tr', null, [neu('th'), neu('th', {text:'Ist'}), neu('th', {text:'Ziel'})])]);
+    ['I', 'II', 'III'].forEach(function(k){
+      var anteil = s.afb[k] / s.gesamt * 100, ok = Math.abs(anteil - r[k]) <= r.spielraum + 1e-9;
+      t.append(neu('tr', {'class': ok ? 'p-ok' : 'p-warnung'}, [neu('td', {text:'AFB ' + k}),
+        neu('td', {text:Math.round(anteil) + ' % (' + beText(s.afb[k]) + ' BE)'}), neu('td', {text:r[k] + ' %'})]));
+    });
+    if(s.afb.ohne > 0) t.append(neu('tr', {'class':'p-warnung'}, [neu('td', {text:'ohne AFB'}),
+      neu('td', {text:beText(s.afb.ohne) + ' BE'}), neu('td')]));
+    afb.append(t, neu('p', {'class':'hilfe', style:'margin:0', text:'Erlaubt sind je ±' + r.spielraum + ' Prozentpunkte.'}));
+    var zielSumme = r.I + r.II + r.III;
+    if(Math.abs(zielSumme - 100) > 1e-9) afb.append(neu('p', {'class':'warnhinweis', style:'margin-top:4px',
+      text:'Die Zielwerte ergeben zusammen ' + beText(zielSumme) + ' % statt 100 % – bitte unter „Bewertungsregeln einstellen“ anpassen.'}));
+  }
+
+  var ul = $('.p-liste', box);
+  ul.replaceChildren();
+  if(!pr.liste.length && s.gesamt > 0) ul.append(neu('li', {'class':'p-ok', text:'Keine Auffälligkeiten bei Arbeitsaufträgen, AFB und Haken.'}));
+  pr.liste.forEach(function(e){
+    var li = neu('li', {text:e.text});
+    if(e.ziel){
+      li.classList.add('sprung');
+      li.title = 'Zum Baustein springen';
+      li.addEventListener('click', function(){
+        waehlen(e.ziel);
+        var el = elemente.get(e.ziel);
+        if(el) el.scrollIntoView({block:'center', behavior:'smooth'});
+      });
+    }
+    ul.append(li);
+  });
+}
+
+/* ================= Bewertungsregeln einstellen =================
+   Alle Zahlenwerte des Regelwerks; sie gelten für diese Datei und werden mit ihr gespeichert. */
+var regelnOffen = false;
+function regelnEinstellungen(p){
+  var d = neu('details', {'class':'regeln', open:regelnOffen}, [neu('summary', {text:'Bewertungsregeln einstellen'})]);
+  d.addEventListener('toggle', function(){ regelnOffen = d.open; });
+  d.append(neu('p', {'class':'hilfe', style:'margin:4px 0 0', text:'Die Werte gelten für diese Arbeit und werden mit ihr gespeichert. '
+    + 'Eine KI, der du die Datei gibst, richtet sich danach.'}));
+  REGELWERK.werte.forEach(function(g){
+    d.append(neu('h4', {text:g.titel}));
+    g.eintraege.forEach(function(e){
+      var i = neu('input', {type:'number', step:'any', min:0, value:Z.regeln[g.gruppe][e.schluessel]});
+      i.addEventListener('input', function(){
+        var v = parseFloat(String(i.value).replace(',', '.'));
+        if(!isFinite(v) || v < 0) return;
+        Z.regeln[g.gruppe][e.schluessel] = v;
+        merken(); pruefungAktualisieren();
+      });
+      d.append(neu('label', {'class':'regel'}, [neu('span', {'class':'regel-text', text:e.text}),
+        neu('span', {'class':'regel-wert'}, [i, neu('span', {text:e.einheit})])]));
+    });
+  });
+  var knoepfe = neu('div', {'class':'knopfreihe', style:'margin-top:8px'}, [
+    neu('button', {type:'button', text:'Für neue Arbeiten übernehmen', onclick:function(){
+      try{ localStorage.setItem(REGELN_EIGENE, JSON.stringify(Z.regeln)); meldung('Diese Werte gelten ab jetzt für neue Leistungsnachweise.'); }
+      catch(err){ meldung('Die Werte konnten nicht im Browser gespeichert werden.'); }
+    }}),
+    neu('button', {type:'button', text:'Ursprüngliche Werte', onclick:function(){
+      Z.regeln = regelnAusWerkseinstellung();
+      merken(); panelBauen();
+      meldung('Für diese Arbeit gelten wieder die ursprünglichen Werte des Regelwerks.');
+    }})
+  ]);
+  d.append(knoepfe);
+  p.root.append(d);
+}
+
+function gruppenUndBe(p){
   p.abschnitt('Gruppen');
   var c = neu('input', {type:'checkbox', id:'opt-gruppen', checked:!!Z.gruppen});
   c.addEventListener('change', function(){ if(!gruppenSchalten(c.checked)) c.checked = !!Z.gruppen; });
@@ -2844,8 +3488,10 @@ function ueberblickBauen(p){
   }
   for(var i = 0; i < zeilen; i++){
     var a = eigen.aufgaben[i];
-    var detail = a && a.ausTeilen ? a.teile.filter(function(t){ return Number(t.b.punkte) > 0; })
-      .map(function(t){ return t.buchstabe + ') ' + beText(t.b.punkte); }).join(' · ') : '';
+    // Teilaufgaben mit BE und AFB, z. B. „a) 2 (I) · b) 3 (II)“
+    var detail = !a ? '' : a.ausTeilen ? a.teile.filter(function(t){ return Number(t.b.punkte) > 0; })
+      .map(function(t){ return t.buchstabe + ') ' + beText(t.b.punkte) + (t.b.afb ? ' (' + t.b.afb + ')' : ''); }).join(' · ')
+      : (a.b.afb ? 'AFB ' + a.b.afb : '');
     zeile('Aufgabe ' + (i + 1), detail, st.map(function(s){ return s.aufgaben[i] ? s.aufgaben[i].summe : null; }), a && a.b.id);
   }
   var summen = st.map(function(s){ return s.gesamt; });
@@ -3008,33 +3654,72 @@ function buchstabe(i){
   var abc = 'abcdefghijklmnopqrstuvwxyz';
   return i < 26 ? abc[i] : abc[Math.floor(i / 26) - 1] + abc[i % 26];
 }
-// Gliederung einer Gruppe: Aufgaben mit ihren Teilaufgaben und alle BE-Summen.
-// Hat eine Aufgabe Teilaufgaben mit BE, zählen nur diese, sonst ihre eigenen BE.
+// Gliederung einer Gruppe: Aufgaben mit ihren Teilaufgaben, alle BE-Summen, die BE je
+// Anforderungsbereich und die Haken der Musterlösung. Hat eine Aufgabe Teilaufgaben mit BE,
+// zählen nur diese, sonst ihre eigenen BE. Haken zählen zur Aufgabe bzw. Teilaufgabe davor.
 function struktur(g){
   g = g || aktiveGruppe();
-  var aufgaben = [], lose = [], akt = null, info = {};
+  var aufgaben = [], lose = [], akt = null, info = {}, ziel = null, hakenGesamt = 0, hakenVorher = 0;
   Z.bloecke.forEach(function(b){
     if(!sichtbarIn(b, g)) return;
     if(b.typ === 'aufgabe'){
-      akt = {b:b, nr:aufgaben.length + 1, teile:[]};
+      akt = {b:b, nr:aufgaben.length + 1, teile:[], haken:0};
       aufgaben.push(akt);
       info[b.id] = akt;
+      ziel = akt;
     } else if(b.typ === 'teilaufgabe'){
       var liste = akt ? akt.teile : lose;       // Teilaufgaben vor der ersten Aufgabe stehen für sich
-      var t = {b:b, buchstabe:buchstabe(liste.length)};
+      var t = {b:b, buchstabe:buchstabe(liste.length), haken:0};
       liste.push(t);
       info[b.id] = t;
+      ziel = t;
     }
+    var h = hakenImBaustein(b);
+    hakenGesamt += h;
+    if(ziel) ziel.haken += h; else hakenVorher += h;
   });
-  var gesamt = 0;
+  var gesamt = 0, afb = {I:0, II:0, III:0, ohne:0};
+  function afbZaehlen(x, be){
+    var a = x.b.afb;
+    afb[a === 'I' || a === 'II' || a === 'III' ? a : 'ohne'] += be;
+  }
+  // soll/ist: BE und Haken für jeden Baustein, der BE trägt
   aufgaben.forEach(function(a){
     var teile = a.teile.reduce(function(s, t){ return s + (Number(t.b.punkte) || 0); }, 0);
     a.ausTeilen = teile > 0;
     a.summe = a.ausTeilen ? teile : (Number(a.b.punkte) || 0);
     gesamt += a.summe;
+    if(a.ausTeilen){
+      a.soll = 0; a.ist = a.haken;                // vor der ersten Teilaufgabe gibt es keine BE
+      a.teile.forEach(function(t){ t.soll = Number(t.b.punkte) || 0; t.ist = t.haken; afbZaehlen(t, t.soll); });
+    } else {
+      a.soll = a.summe;
+      a.ist = a.haken + a.teile.reduce(function(s, t){ return s + t.haken; }, 0);
+      afbZaehlen(a, a.summe);
+    }
   });
-  lose.forEach(function(t){ gesamt += Number(t.b.punkte) || 0; });
-  return {aufgaben:aufgaben, lose:lose, gesamt:gesamt, info:info};
+  lose.forEach(function(t){ t.soll = Number(t.b.punkte) || 0; t.ist = t.haken; gesamt += t.soll; afbZaehlen(t, t.soll); });
+  return {aufgaben:aufgaben, lose:lose, gesamt:gesamt, info:info, afb:afb, hakenGesamt:hakenGesamt, hakenVorher:hakenVorher};
+}
+
+/* ================= Operatoren ================= */
+var OPERATOREN = {};   // Imperativ (klein geschrieben) → Eintrag aus dem Regelwerk
+REGELWERK.operatoren.forEach(function(o){ o.imperativ.forEach(function(w){ OPERATOREN[w.toLowerCase()] = o; }); });
+function nurText(html){
+  var d = document.createElement('div');
+  d.innerHTML = String(html || '').replace(/\$[^$]*\$/g, ' Formel ');
+  return d.textContent.replace(/\[(?:✓|✔|½|1\/2)\]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+// Beginnt ein Satz mit einem Operator? Steht eine Frage im Text?
+function auftragPruefen(html){
+  var t = nurText(html), operator = null;
+  t.split(/[.!?:;]\s+/).some(function(satz){
+    var w = (/^[„"»(]*([A-Za-zÄÖÜäöüß]+)/.exec(satz.trim()) || [])[1];
+    var e = w && OPERATOREN[w.toLowerCase()];
+    if(e) operator = {wort:w, eintrag:e};
+    return !!e;
+  });
+  return {leer:!t, operator:operator, frage:t.indexOf('?') >= 0};
 }
 // Nummern, Buchstaben und BE in die sichtbaren Aufgaben und Teilaufgaben eintragen.
 // Bei Aufgaben mit Teilaufgaben steht die Summe ohne Lücke – eingetragen wird bei den Teilaufgaben.
@@ -3043,7 +3728,7 @@ function kennzeichnen(){
   Z.bloecke.forEach(function(b){
     var e = elemente.get(b.id), x = s.info[b.id];
     if(!e || !x) return;
-    var ort = $('.be-ort', e);
+    var ort = $('.be-ort', e), afbOrt = $('.afb-ort', e), pr = $('.hk-pruefung', e);
     if(b.typ === 'aufgabe'){
       $('.a-nr', e).textContent = 'Aufgabe ' + x.nr;
       if(x.summe > 0) ort.replaceChildren(beFeld(x.summe, !x.ausTeilen)); else ort.replaceChildren();
@@ -3051,6 +3736,14 @@ function kennzeichnen(){
       $('.t-bu', e).textContent = x.buchstabe + ')';
       if(Number(b.punkte) > 0) ort.replaceChildren(beFeld(b.punkte, true)); else ort.replaceChildren();
     }
+    // AFB steht nur bei Bausteinen, die BE tragen (sichtbar in der Lösungsfassung)
+    var traegt = x.soll != null && !(b.typ === 'aufgabe' && x.ausTeilen);
+    afbOrt.textContent = traegt && b.afb ? 'AFB ' + b.afb : '';
+    // Stimmen die Haken nicht mit den BE überein, zeigt der rechte Rand das in der Lösungsfassung an
+    var falsch = s.hakenGesamt > 0 && x.soll != null && Math.abs(x.ist - x.soll) > 1e-9;
+    pr.classList.toggle('an', falsch);
+    pr.textContent = falsch ? '✓ ' + beText(x.ist) + ' / ' + beText(x.soll) : '';
+    pr.title = falsch ? 'Die Haken ergeben ' + beText(x.ist) + ' BE, vergeben sind ' + beText(x.soll) + ' BE.' : '';
   });
   // Gruppenmarke am Rand und Knopf A|B im Werkzeug
   Z.bloecke.forEach(function(b){
@@ -3234,6 +3927,10 @@ function planen(){
     kopfZeichnen();     // zuerst: die Höhe des Kopfs bestimmt den Platz auf Seite 1
     if(Z.modus === 'upload') uploadPlanen(); else gestaltenPlanen();
     kopfAktualisieren();
+    // Prüfhinweise zum gewählten Arbeitsauftrag schon beim Tippen aktuell halten
+    var info = $('#eigenschaften .auftrag-info'), gewaehlt = blockHolen(auswahl);
+    if(info && gewaehlt) auftragInfo(info, gewaehlt);
+    pruefungAktualisieren();
   } finally {
     planLaeuft = false;
   }
@@ -3242,6 +3939,34 @@ function planen(){
 
 function leerHinweis(inhalt, text){
   inhalt.append(neu('div', {'class':'leer-seite', html:text}));
+}
+
+var schlussEl = neu('div', {'class':'schluss'});
+function schlussElement(){
+  if(Z.fassung === 'loesung'){
+    var b = Z.kopf.umfangBegruendung.trim();
+    if(!b) return null;
+    schlussEl.replaceChildren(neu('span', {'class':'begruendung', text:'Begründung zum Umfang: ' + b}));
+  } else {
+    if(!Z.kopf.vielErfolg) return null;
+    schlussEl.textContent = 'Viel Erfolg!';
+  }
+  return schlussEl;
+}
+
+// Lösungsfassung: Passt schon die gedruckte Musterlösung nicht in den Platz der Schülerfassung,
+// reicht er für eine handschriftliche Antwort erst recht nicht – Marke im rechten Rand
+function platzPruefen(){
+  Z.bloecke.forEach(function(b){
+    var e = b.typ === 'loesung' && elemente.get(b.id);
+    var d = e && $('.loesungstext', e), m = e && $('.platz-pruefung', e);
+    if(!d || !m) return;
+    var zuKlein = b.platz !== 'kein' && d.offsetHeight > b.hoehe * 96 / 2.54 + 1;
+    m.classList.toggle('an', zuKlein);
+    m.textContent = zuKlein ? 'Platz zu klein' : '';
+    m.title = zuKlein ? 'Die Musterlösung ist länger als der Platz zum Schreiben (' + beText(b.hoehe) + ' cm). '
+      + 'Handschrift braucht noch mehr Platz.' : '';
+  });
 }
 
 function gestaltenPlanen(){
@@ -3291,6 +4016,18 @@ function gestaltenPlanen(){
       } else e.classList.add('zu-gross');
     }
   });
+
+  // Schluss: „Viel Erfolg!“ in der Schülerfassung, die Begründung zum Umfang in der Lösungsfassung
+  var schluss = zeigen.length ? schlussElement() : null;
+  if(schluss){
+    schluss.classList.remove('im-rand');
+    platzieren(schluss);
+    if(schluss.offsetTop + schluss.offsetHeight > inhalt.clientHeight + 0.5){
+      // „Viel Erfolg!“ rückt in den unteren Rand statt eine neue Seite anzufangen; die Begründung bekommt eine neue Seite
+      if(Z.fassung === 'loesung' && schluss.previousSibling){ zuletzt = schluss.previousSibling; naechsteSeite(); platzieren(schluss); }
+      else schluss.classList.add('im-rand');
+    }
+  } else if(schlussEl.parentNode) schlussEl.remove();
   belegt.push([inhalt, zuletzt]);
 
   // Reste hinter dem letzten Baustein jeder Seite entfernen
@@ -3300,6 +4037,7 @@ function gestaltenPlanen(){
     while(n){ var weiter = n.nextSibling; n.remove(); n = weiter; }
   });
   seitenKuerzen(belegt.length);
+  platzPruefen();
 
   if(!zeigen.length){
     leerHinweis($('.inhalt', ersteSeite), Z.bloecke.length
@@ -3610,7 +4348,7 @@ function fassungSetzen(f){
   document.body.classList.toggle('fassung-loesung', f === 'loesung');
   document.body.classList.toggle('fassung-schueler', f !== 'loesung');
   $$('[data-fassung]').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.fassung === f); });
-  Z.bloecke.forEach(function(b){ if(b.typ === 'formel' || b.typ === 'rechnung' || b.typ === 'diagramm') blockZeichnen(b); });
+  Z.bloecke.forEach(function(b){ if(b.typ === 'formel' || b.typ === 'rechnung' || b.typ === 'diagramm' || b.typ === 'loesung') blockZeichnen(b); });
   planen(); merken();
 }
 $$('[data-modus]').forEach(function(b){ b.addEventListener('click', function(){ modusSetzen(b.dataset.modus); }); });
@@ -3704,6 +4442,8 @@ function laden(d){
   auswahl = null;
   Z.kopf = kopfAusDatei(d);
   delete Z.fach; delete Z.titel;      // Kopf von Arbeitsblättern bzw. Fassung 1, steckt jetzt in Z.kopf
+  // Dateien ohne eigene Werte (ältere, Arbeitsblätter, von einer KI erstellte) bekommen die Standardwerte
+  Z.regeln = regelnMischen(standardRegeln(), d && d.regeln);
   $('#opt-trim').checked = Z.trim;
   Z.gruppen = !!Z.gruppen;
   document.body.classList.toggle('mit-gruppen', Z.gruppen);
