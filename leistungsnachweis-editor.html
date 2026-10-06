@@ -2866,11 +2866,13 @@ var Diagramm = (function(){
         if(hl) g.push('<path class="hilfslinien" d="' + hl + '" fill="none" stroke="var(--loesung)" stroke-width="0.4" stroke-dasharray="1.4 0.9"/>');
       }
       var zeigePunkte = !b.nurPunkte || loesung;
-      if(pkt.length && zeigeGraph && b.ausgleich !== 'keine'){
+      // Verbindungslinie bzw. Ausgleichsgerade gehört zu den Messpunkten: nur sichtbar, wo die Punkte es sind
+      var linienFarbe = (b.nurPunkte && loesung) ? 'var(--loesung)' : graphFarbe(graphen);
+      if(pkt.length && zeigeGraph && zeigePunkte && b.ausgleich !== 'keine'){
         var z = pkt.slice().sort(function(p, q){ return p[0] - q[0]; });
         if(b.ausgleich === 'verbinden'){
           g.push('<path d="' + z.map(function(p, i){ return (i ? 'L' : 'M') + px(p[0]).toFixed(2) + ' ' + py(p[1]).toFixed(2); }).join('') +
-            '" fill="none" stroke="' + graphFarbe(graphen) + '" stroke-width="0.45"/>');
+            '" fill="none" stroke="' + linienFarbe + '" stroke-width="0.45"/>');
         } else {
           var sxx = 0, sxy = 0, sx1 = 0, sy1 = 0, nn = z.length;
           z.forEach(function(p){ sxx += p[0] * p[0]; sxy += p[0] * p[1]; sx1 += p[0]; sy1 += p[1]; });
@@ -2879,7 +2881,7 @@ var Diagramm = (function(){
           else { var nenn = nn * sxx - sx1 * sx1; m = nenn ? (nn * sxy - sx1 * sy1) / nenn : 0; c = (sy1 - m * sx1) / nn; }
           var xa = b.ausgleich === 'ursprung' ? Math.max(xmin, 0) : xmin;
           g.push('<path d="M' + px(xa).toFixed(2) + ' ' + py(m * xa + c).toFixed(2) + 'L' + px(xmax).toFixed(2) + ' ' + py(m * xmax + c).toFixed(2) +
-            '" fill="none" stroke="' + graphFarbe(graphen) + '" stroke-width="0.45"/>');
+            '" fill="none" stroke="' + linienFarbe + '" stroke-width="0.45"/>');
         }
       }
       if(zeigePunkte){
