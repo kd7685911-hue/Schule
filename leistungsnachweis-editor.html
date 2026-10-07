@@ -109,6 +109,10 @@ REGEL 6 – DIAGRAMME
   sein: ½ BE für die Hilfslinien, ½ BE für den Wert mit Einheit. In der Musterlösung
   zeigt das Diagramm die Hilfslinien: bei Diagrammen mit Skala im Feld "ablesen"
   (je Zeile "Rechtswert; Hochwert", z. B. "5; 6"), bei qualitativen im Feld "marken".
+• Diagramme mit Skala bekommen "karo": true. Das Gitter hat dann quadratische
+  5-mm-Kästchen wie das Heft und die Karofelder, auch wenn die Achsen verschieden
+  skaliert sind. Bereich, Schritt und Unterteilung so wählen, dass die Werte auf
+  Gitterlinien liegen und das Diagramm gut auf die Seite passt.
 
 REGEL 7 – MUSTERLÖSUNG
 • Fachlich korrekt und vollständig. Sie muss der Prüfung durch die
@@ -145,6 +149,8 @@ kopf
   datum          "JJJJ-MM-TT"; leer = Linie zum Eintragen
   zeit           Bearbeitungszeit in Minuten (0 = keine Angabe)
   hilfsmittel    Auswahl aus "taschenrechner", "formelsammlung", "periodensystem"
+  weitereHilfsmittel  Text, z. B. "Bleistift, Lineal"; steht hinter der Auswahl. Sind
+                 beide leer, steht im Kopf „Hilfsmittel: keine“.
   hinweise       Auswahl aus "sauber" (saubere Schrift), "fachsprache" (Fachsprache und
                  ganze Sätze), "rechenwege" (vor allem Physik); der Hinweis zu
                  digitalen Geräten und Unterschleif steht immer da
@@ -178,8 +184,11 @@ Jeder Baustein hat "id" (eindeutig, z. B. "b1"), "typ" und je nach Typ diese Fel
                die lückenlos aneinander anschließen, ergeben einen Graphen), punkte
                ("Rechtswert; Hochwert" je Zeile), ausgleich ("keine", "verbinden",
                "gerade", "ursprung"), nurGraph bzw. nurPunkte true = nur in der Lösung,
-               ablesen (Hilfslinien der Lösung), breite (%), hoehe (cm), ausrichtung
-               ("mitte"), textDaneben false. Qualitative Diagramme: TYPEN.diagramm.neu().
+               ablesen (Hilfslinien der Lösung), karo (true = quadratische 5-mm-Kästchen
+               wie Karopapier; breite und hoehe ergeben sich dann aus dem Gitter, sonst
+               breite in % und hoehe in cm), ausrichtung ("mitte"; "links" oder "rechts"
+               mit textDaneben true und html = Text neben dem Diagramm), textDaneben.
+               Qualitative Diagramme: TYPEN.diagramm.neu().
   Weitere Bausteine (gitter, raetsel, symtab): siehe TYPEN.<typ>.neu() im Quelltext.
 
 Text in html-Feldern: einfaches HTML (<b>, <i>, <u>, <br>, <ul><li>, <ol><li>).
@@ -1335,7 +1344,8 @@ var HINWEISE = [
 
 function standardKopf(){
   return {art:'stegreifaufgabe', nr:1, fach:'', fachFrei:false, klasse:'', datum:'', zeit:15,
-    hilfsmittel:[], hinweise:['sauber', 'fachsprache'], eigenerHinweis:'', umfangBegruendung:'', vielErfolg:true};
+    hilfsmittel:[], weitereHilfsmittel:'', hinweise:['sauber', 'fachsprache'], eigenerHinweis:'', umfangBegruendung:'',
+    vielErfolg:true};
 }
 // Fachbezogene Hinweise passend zum Fach an- bzw. abwählen, die übrigen bleiben, wie sie sind
 function hinweiseFuerFach(fach, liste){
@@ -1351,7 +1361,7 @@ function hinweiseFuerFach(fach, liste){
 // Kopf aus einer Datei übernehmen; Arbeitsblätter bringen höchstens ihr Fach mit
 function kopfAusDatei(d){
   var k = Object.assign(standardKopf(), d && d.kopf ? d.kopf : {});
-  ['fach', 'klasse', 'datum', 'eigenerHinweis', 'umfangBegruendung'].forEach(function(f){ k[f] = String(k[f] || ''); });
+  ['fach', 'klasse', 'datum', 'weitereHilfsmittel', 'eigenerHinweis', 'umfangBegruendung'].forEach(function(f){ k[f] = String(k[f] || ''); });
   k.nr = Number(k.nr) || 0;
   k.zeit = Number(k.zeit) || 0;
   k.fachFrei = !!k.fachFrei;
@@ -1384,6 +1394,10 @@ function datumText(iso){
   var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
   return m ? m[3] + '.' + m[2] + '.' + m[1] : '';
 }
+// Freitext wie „Bleistift, Lineal“ oder „Bleistift und Lineal“ in einzelne Hilfsmittel zerlegen
+function weitereHilfsmittel(text){
+  return String(text || '').split(/\s*[,;]\s*|\s+und\s+/).map(function(t){ return t.trim(); }).filter(Boolean);
+}
 function aufzaehlen(liste){
   return liste.length < 2 ? liste.join('') : liste.slice(0, -1).join(', ') + ' und ' + liste[liste.length - 1];
 }
@@ -1407,7 +1421,8 @@ function kopfZeichnen(){
   var zeit = $('#k-zeit');
   zeit.replaceChildren();
   if(k.zeit > 0) zeit.append(document.createTextNode('Bearbeitungszeit: '), neu('b', {text:k.zeit + ' Minuten'}));
-  var hm = HILFSMITTEL.filter(function(h){ return k.hilfsmittel.indexOf(h[0]) >= 0; }).map(function(h){ return h[1]; });
+  var hm = HILFSMITTEL.filter(function(h){ return k.hilfsmittel.indexOf(h[0]) >= 0; }).map(function(h){ return h[1]; })
+    .concat(weitereHilfsmittel(k.weitereHilfsmittel));
   $('#k-hilfsmittel').replaceChildren(document.createTextNode('Hilfsmittel: '), neu('b', {text: hm.length ? aufzaehlen(hm) : 'keine'}));
 
   // erreichte / mögliche BE der gezeigten Gruppe
@@ -1491,7 +1506,9 @@ function kopfEinstellungen(root){
     });
     return neu('label', {'class':'haken' + (oben ? ' oben' : '')}, [c, document.createTextNode(text)]);
   }
-  p.feld('Hilfsmittel', [neu('div', {'class':'haken-reihe'}, HILFSMITTEL.map(function(h){ return haken('hilfsmittel', h[0], h[1]); }))], true);
+  var wh = neu('input', {type:'text', value:k.weitereHilfsmittel, placeholder:'Weitere, z. B. Bleistift, Lineal'});
+  wh.addEventListener('input', function(){ k.weitereHilfsmittel = wh.value; kopfGeaendert(); });
+  p.feld('Hilfsmittel', [neu('div', {'class':'haken-reihe'}, HILFSMITTEL.map(function(h){ return haken('hilfsmittel', h[0], h[1]); })), wh], true);
 
   var eh = neu('input', {type:'text', value:k.eigenerHinweis, placeholder:'Eigener Hinweis (optional)'});
   eh.addEventListener('input', function(){ k.eigenerHinweis = eh.value; kopfGeaendert(); });
@@ -2688,6 +2705,13 @@ var Diagramm = (function(){
   var STRICHE = ['', '2.2 1.2', '0.6 1', '3 1 0.6 1'];
 
   /* ---------- Zeichnen ---------- */
+  // Schritte der Skala und Feinunterteilung – für das Gitter und für die Größe bei Karopapier
+  function raster(b, xmin, xmax, ymin, ymax){
+    return {sx:Math.max(num(b.x.schritt, 1), (xmax - xmin) / 60), sy:Math.max(num(b.y.schritt, 1), (ymax - ymin) / 60),
+      u:Math.max(1, Math.min(10, Math.round(num(b.unterteilung, 1))))};
+  }
+  var KARO = 5, KARO_MAX_HOEHE = 200;   // Kästchen wie im Heft und in den Karofeldern (mm); größte Höhe (mm)
+
   function svg(b, loesung){
     var W = Math.round(180 * b.breite / 100 * 10) / 10, H = b.hoehe * 10;
     var quant = b.art === 'quant';
@@ -2730,6 +2754,19 @@ var Diagramm = (function(){
       if(lb) { L = Math.max(L, lb + 3); X0 = L; }
     }
 
+    // Gitter wie Karopapier: Ein Feinkästchen ist in beiden Richtungen 5 mm groß, auch wenn die Achsen
+    // verschieden skaliert sind. Breite und Höhe folgen aus Bereich, Schritt und Unterteilung. Passt das
+    // Diagramm so nicht auf die Seite, werden die Kästchen kleiner – quadratisch bleiben sie.
+    if(quant && b.gitter && b.karo){
+      var rk = raster(b, xmin, xmax, ymin, ymax);
+      var nx = (xmax - xmin) / (rk.sx / rk.u), ny = (ymax - ymin) / (rk.sy / rk.u);
+      var maxB = b.ausrichtung !== 'mitte' && b.textDaneben ? 126 : 180;
+      var kante = Math.min(KARO, (maxB - L - R) / nx, (KARO_MAX_HOEHE - T - B) / ny);
+      W = Math.round((nx * kante + L + R) * 100) / 100;
+      H = Math.round((ny * kante + T + B) * 100) / 100;
+      X1 = W - R; Y0 = H - B;
+    }
+
     var px = function(x){ return X0 + (x - xmin) / (xmax - xmin) * (X1 - X0); };
     var py = function(y){ return Y0 - (y - ymin) / (ymax - ymin) * (Y0 - Y1); };
     var achseY = py(ymin <= 0 && ymax >= 0 ? 0 : ymin);   // Lage der x-Achse
@@ -2743,8 +2780,7 @@ var Diagramm = (function(){
     // Gitter und Skala
     var labelBreite = (String(xName).length + (xEinheit ? String(einheitText(xEinheit)).length + 4 : 0)) * 1.75 + 2;
     if(quant){
-      var sx = Math.max(num(b.x.schritt, 1), (xmax - xmin) / 60), sy = Math.max(num(b.y.schritt, 1), (ymax - ymin) / 60);
-      var u = Math.max(1, Math.min(10, Math.round(num(b.unterteilung, 1))));
+      var rs = raster(b, xmin, xmax, ymin, ymax), sx = rs.sx, sy = rs.sy, u = rs.u;
       if(b.gitter){
         var fein = [], grob = [];
         var gitter = function(min, max, schritt, teil, fn){
@@ -2908,7 +2944,8 @@ var Diagramm = (function(){
     return {
       svg:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" style="width:' + W + 'mm;height:' + H + 'mm;display:block;overflow:visible" ' +
         'font-family="Lexend, Segoe UI, Arial, sans-serif" fill="var(--tinte)">' + o.join('') + '</svg>',
-      fehler: fkt ? fkt.fehler : []
+      fehler: fkt ? fkt.fehler : [],
+      breite: W, hoehe: H
     };
   }
 
@@ -2932,16 +2969,17 @@ TYPEN.diagramm = {
       y:{name:'s', einheit:'m', min:0, max:50, schritt:10},
       unterteilung:2, gitter:true,
       funktionen:'s = 5*t | Körper A', punkte:'', ausgleich:'keine',
-      nurGraph:false, nurPunkte:false, ablesen:'',
+      nurGraph:false, nurPunkte:false, ablesen:'', karo:false,
       breite:60, hoehe:5.5, ausrichtung:'mitte', textDaneben:true, html:'', beschriftungAn:false, beschriftung:''
     };
   },
   zeichnen:function(b, box){
     var umfluss = b.ausrichtung !== 'mitte' && b.textDaneben;
     var fig = neu('figure', {'class':'bild diagramm ' + b.ausrichtung + (umfluss ? ' schwimmt' : ''), style: umfluss ? '' : 'margin:0'});
-    fig.innerHTML = Diagramm.svg(b, Z.fassung === 'loesung').svg;
+    var d = Diagramm.svg(b, Z.fassung === 'loesung');
+    fig.innerHTML = d.svg;
     if(b.beschriftungAn){
-      var c = neu('figcaption', {style:'width:' + (180 * b.breite / 100) + 'mm'});
+      var c = neu('figcaption', {style:'width:' + d.breite + 'mm'});
       editierbar(c, {get:function(){ return b.beschriftung; }, set:function(v){ b.beschriftung = v; }, mathe:true, einzeilig:true, platzhalter:'Beschriftung'});
       fig.append(c);
     }
@@ -2955,8 +2993,13 @@ TYPEN.diagramm = {
     if(b.art === 'qual') diagrammQualPanel(b, p); else diagrammQuantPanel(b, p);
 
     p.abschnitt('Größe und Platzierung');
-    p.zahl('Breite', 'breite', {min:30, max: (b.ausrichtung !== 'mitte' && b.textDaneben) ? 70 : 100, step:5, regler:true, einheit:'%'});
-    p.zahl('Höhe', 'hoehe', {min:3, max:20, step:0.5, einheit:'cm'});
+    if(b.art === 'quant' && b.gitter && b.karo){
+      p.hinweis('Gitter wie Karopapier: Jedes Feinkästchen ist 5 mm × 5 mm groß. Die Größe des Diagramms ergibt sich aus '
+        + 'Bereich, Schritt und Feinunterteilung der Achsen – mehr Unterteilung macht es größer.');
+    } else {
+      p.zahl('Breite', 'breite', {min:30, max: (b.ausrichtung !== 'mitte' && b.textDaneben) ? 70 : 100, step:5, regler:true, einheit:'%'});
+      p.zahl('Höhe', 'hoehe', {min:3, max:20, step:0.5, einheit:'cm'});
+    }
     p.auswahl('Ausrichtung', 'ausrichtung', [['links', 'Links'], ['mitte', 'Mitte'], ['rechts', 'Rechts']]);
     if(b.ausrichtung !== 'mitte') p.haken('Text neben dem Diagramm', 'textDaneben');
     p.haken('Beschriftung darunter', 'beschriftungAn');
@@ -3123,6 +3166,7 @@ function diagrammQuantPanel(b, p){
   });
   p.haken('Gitternetz', 'gitter');
   if(b.gitter) p.auswahl('Feinunterteilung pro Schritt', 'unterteilung', [[1, 'keine'], [2, '2 Teile'], [4, '4 Teile'], [5, '5 Teile'], [10, '10 Teile (mm-Papier)']], true);
+  if(b.gitter) p.haken('Gitter wie Karopapier (quadratische 5-mm-Kästchen)', 'karo');
 
   p.abschnitt('Graphen');
   var fe = neu('div', {'class':'fehler'});
