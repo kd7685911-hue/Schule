@@ -85,7 +85,9 @@ REGEL 5 – RECHNUNGEN
   ihr Inhalt folgt den Datenblättern des ISB für Mathematik, Physik und Chemie.
 • Formel umstellen: ½ BE. Einheit umrechnen: ½ BE je Umrechnung. Einsetzen und
   Ausrechnen: 1 BE je Rechenschritt bis zu einem Zwischen- oder Endergebnis.
-  Gegeben/Gesucht und Antwortsatz: 0 BE.
+  Gegeben/Gesucht und Antwortsatz: 0 BE. Bis Jahrgangsstufe 8 (Einstieg in die
+  Physik): je Rechnung ½ BE für die Formalien (Gegeben, Gesucht und Lösung sauber
+  gegliedert), in der Musterlösung als eigene Zeile „Formalien … [½]“.
 • Korrekturregel: Fehlt beim Ergebnis die Einheit oder ist sie falsch, wird ½ BE
   abgezogen, höchstens einmal je Teilaufgabe. Dafür gibt es keinen Haken.
 • Eine Rechnung soll zur Faustregel passen (1 BE etwa 1 Minute, typisch 2 bis 4 BE).
@@ -105,10 +107,12 @@ REGEL 6 – DIAGRAMME
   ½ BE je zwei Punkte (auf halbe BE abrunden). Die Jahrgangsstufe ist die Zahl in
   kopf.klasse („10b“ → 10).
 • Graph zeichnen: 1 BE.
-• Ablesen: Hilfslinien senkrecht und waagrecht zu den Achsen müssen eingezeichnet
-  sein: ½ BE für die Hilfslinien, ½ BE für den Wert mit Einheit. In der Musterlösung
-  zeigt das Diagramm die Hilfslinien: bei Diagrammen mit Skala im Feld "ablesen"
-  (je Zeile "Rechtswert; Hochwert", z. B. "5; 6"), bei qualitativen im Feld "marken".
+• Ablesen: 1 BE für den richtig abgelesenen Wert mit Einheit; liegt er zwischen
+  Gitterlinien, nennt die Musterlösung eine Ablesetoleranz. Hilfslinien sind keine
+  Pflicht, der Auftrag verlangt sie nicht („Bestimme mithilfe des Diagramms …“). Die
+  Musterlösung zeigt sie trotzdem im Diagramm: bei Diagrammen mit Skala im Feld
+  "ablesen" (je Zeile "Rechtswert; Hochwert", z. B. "5; 6"), bei qualitativen im
+  Feld "marken".
 • Diagramme mit Skala bekommen "karo": true. Das Gitter hat dann quadratische
   5-mm-Kästchen wie das Heft und die Karofelder, auch wenn die Achsen verschieden
   skaliert sind. Bereich, Schritt und Unterteilung so wählen, dass die Werte auf
@@ -260,6 +264,8 @@ BEISPIEL (gekürzt, ohne Formelsammlung)
       {"schluessel": "umrechnen", "wert": 0.5, "einheit": "BE", "text": "je Umrechnung einer Einheit (z. B. 72 km/h = 20 m/s)"},
       {"schluessel": "rechenschritt", "wert": 1, "einheit": "BE", "text": "je Rechenschritt: Einsetzen und Ausrechnen bis zu einem Zwischen- oder Endergebnis"},
       {"schluessel": "gegebenGesucht", "wert": 0, "einheit": "BE", "text": "Gegeben und Gesucht"},
+      {"schluessel": "formalien", "wert": 0.5, "einheit": "BE", "text": "je Rechnung für die Formalien (Gegeben, Gesucht, Lösung sauber gegliedert) bis zur folgenden Jahrgangsstufe"},
+      {"schluessel": "formalienBisJgst", "wert": 8, "einheit": "Jgst.", "text": "bis einschließlich dieser Jahrgangsstufe gibt es die BE für die Formalien, danach keine"},
       {"schluessel": "antwortsatz", "wert": 0, "einheit": "BE", "text": "Antwortsatz"},
       {"schluessel": "einheitAbzug", "wert": 0.5, "einheit": "BE", "text": "Abzug bei fehlender oder falscher Einheit im Ergebnis, höchstens einmal je Teilaufgabe"}
     ]},
@@ -270,8 +276,8 @@ BEISPIEL (gekürzt, ohne Formelsammlung)
       {"schluessel": "grenzeJgst", "wert": 10, "einheit": "Jgst.", "text": "ab dieser Jahrgangsstufe gilt der nächste Wert für Messpunkte"},
       {"schluessel": "messpunktAbGrenze", "wert": 0.25, "einheit": "BE", "text": "je Messpunkt ab der Grenze, also ½ BE je zwei Punkte (auf halbe BE abrunden)"},
       {"schluessel": "graph", "wert": 1, "einheit": "BE", "text": "Graph zeichnen"},
-      {"schluessel": "hilfslinien", "wert": 0.5, "einheit": "BE", "text": "je Ablesung: Hilfslinien senkrecht und waagrecht zu den Achsen"},
-      {"schluessel": "ablesewert", "wert": 0.5, "einheit": "BE", "text": "je Ablesung: abgelesener Wert mit Einheit"}
+      {"schluessel": "hilfslinien", "wert": 0, "einheit": "BE", "text": "je Ablesung: Hilfslinien senkrecht und waagrecht zu den Achsen (keine Pflicht)"},
+      {"schluessel": "ablesewert", "wert": 1, "einheit": "BE", "text": "je Ablesung: richtig abgelesener Wert mit Einheit"}
     ]}
   ],
   "operatorenliste": {"titel": "Operatoren im Physikunterricht", "quelle": "ISB, Ergänzende Informationen zum LehrplanPLUS, Realschule, Physik, Jahrgangsstufe – alle –, Stand 3. April 2017. Grundlage ist die Handreichung der KMK.", "stand": "3. April 2017", "gilt": "Physik; außerdem Chemie, Biologie und Natur und Technik, bis für diese Fächer eigene ISB-Listen hinterlegt sind", "ergaenzungen": "Operator und erwartete Leistung stehen im Wortlaut des ISB. Ergänzt für den Editor: imperativ (Aufforderungsform; „…“ steht für den Rest des Satzes, danach folgt der abgetrennte Verbzusatz am Satzende) und afb (übliche Zuordnung, nur zur Orientierung – maßgeblich ist die konkrete Aufgabe)."},
@@ -577,6 +583,7 @@ body:not(.mit-gruppen) .nur-gruppen{display:none !important}
 .strich{border-bottom:0.25mm solid var(--linie);height:5mm;position:relative}
 .ankreuzen{display:inline-flex;align-items:center;gap:1.6mm;margin-left:4mm;color:var(--tinte)}
 .kasten{width:3.6mm;height:3.6mm;border:0.3mm solid var(--tinte);border-radius:0.4mm;flex:0 0 auto}
+.zeit-luecke{display:inline-block;width:10mm;height:4mm;border-bottom:0.25mm solid var(--linie);align-self:flex-end;margin-left:-0.4mm}
 .loesungsname{
   position:absolute;left:1mm;bottom:0.6mm;font-family:var(--titel);font-weight:600;
   font-size:10pt;color:var(--loesung);display:none;
@@ -784,6 +791,9 @@ body.fassung-schueler .nur-loesung{visibility:hidden}
 /* Verbundene Flächen: kein Abstand, damit Raster und Linien nahtlos weiterlaufen */
 .blk.verbunden{padding-bottom:0}
 .blk.verbunden::after{bottom:0}
+/* Lösung ohne Schreibplatz: in der Schülerfassung unsichtbar und ohne Abstand */
+.blk.ohne-platz{padding-bottom:0}
+.blk.ohne-platz::after{bottom:0}
 
 .tab{width:100%;border-collapse:collapse;table-layout:fixed}
 .tab td,.tab th{border:0.3mm solid var(--linie);padding:1.2mm 2mm;vertical-align:middle;text-align:center;overflow-wrap:break-word}
@@ -886,7 +896,7 @@ body.fassung-schueler .nur-loesung{visibility:hidden}
             <div class="a-zeile">
               <span>Name:</span><span class="strich"><span class="loesungsname">Lösung</span></span>
               <span class="ankreuzen"><span class="kasten"></span>LRS</span>
-              <span class="ankreuzen"><span class="kasten"></span>Zeitzuschlag in Anspruch genommen</span>
+              <span class="ankreuzen"><span class="kasten"></span>Zeitzuschlag in Anspruch genommen:<span class="zeit-luecke"></span>min</span>
             </div>
             <div class="a-zeile">
               <span>Unterschrift der Erziehungsberechtigten:</span><span class="strich"></span>
@@ -4191,6 +4201,7 @@ function gestaltenPlanen(){
     var art = flaechenArt(b);
     e.classList.toggle('verbunden', !!art && art === flaechenArt(zeigen[i + 1]));
     e.classList.toggle('anschluss', !!art && art === flaechenArt(zeigen[i - 1]));
+    e.classList.toggle('ohne-platz', b.typ === 'loesung' && b.platz === 'kein' && Z.fassung !== 'loesung');
     e.classList.remove('zu-gross');
     platzieren(e);
     if(b.typ === 'umbruch'){ naechsteSeite(); return; }
