@@ -117,6 +117,9 @@ REGEL 6 – DIAGRAMME
   "achsenNurLoesung": true: Größe und Einheit an den Achsen stehen dann nur in der
   Musterlösung, die Zahlen der Skala bleiben. Im Auftrag nicht direkt danach fragen,
   sondern z. B. „Vervollständige das t-s-Diagramm mithilfe der Messwerte.“
+  Sollen sie auch die Einteilung selbst wählen, zusätzlich "skalaNurLoesung": true:
+  Dann fehlen auch die Zahlen an den Achsen. Die Musterlösung nennt eine Einteilung
+  als Beispiel; jede gleichmäßige Einteilung, in die die Werte passen, ist richtig.
 
 REGEL 7 – MUSTERLÖSUNG
 • Fachlich korrekt und vollständig. Sie muss der Prüfung durch die
@@ -191,7 +194,8 @@ Jeder Baustein hat "id" (eindeutig, z. B. "b1"), "typ" und je nach Typ diese Fel
                ablesen (Hilfslinien der Lösung), karo (true = quadratische 5-mm-Kästchen
                wie Karopapier; breite und hoehe ergeben sich dann aus dem Gitter, sonst
                breite in % und hoehe in cm), achsenNurLoesung (true = Größe und Einheit
-               an den Achsen nur in der Lösung), ausrichtung ("mitte"; "links" oder "rechts"
+               an den Achsen nur in der Lösung), skalaNurLoesung (true = Zahlen an den
+               Achsen nur in der Lösung), ausrichtung ("mitte"; "links" oder "rechts"
                mit textDaneben true und html = Text neben dem Diagramm), textDaneben.
                Qualitative Diagramme: TYPEN.diagramm.neu().
   Weitere Bausteine (gitter, raetsel, symtab): siehe TYPEN.<typ>.neu() im Quelltext.
@@ -2798,18 +2802,20 @@ var Diagramm = (function(){
         o.push('<path d="' + grob.join('') + '" stroke="#B4C1C4" stroke-width="0.22" fill="none"/>');
       }
       var ticks = [];
+      // Zahlen der Skala: auf Wunsch nur in der Lösung (in Lösungsfarbe) – dann wählen die Schüler die Einteilung selbst
+      var skala = !b.skalaNurLoesung || loesung, sf = b.skalaNurLoesung ? ' fill="var(--loesung)"' : '';
       for(var k = Math.ceil(xmin / sx - 1e-9); k * sx <= xmax + 1e-9; k++){
         var xv = k * sx, X = px(xv);
         ticks.push('M' + X.toFixed(2) + ' ' + (achseY - 0.8) + 'v1.6');
         if(Math.abs(xv) < 1e-9 && Math.abs(achseX - X) < 0.01) continue;
         if(X > X1 + 3.5 - labelBreite - 1) continue;
-        o.push('<text x="' + X.toFixed(2) + '" y="' + (achseY + 3.9) + '" font-size="' + fsk + '" text-anchor="middle">' + zahl(xv) + '</text>');
+        if(skala) o.push('<text x="' + X.toFixed(2) + '" y="' + (achseY + 3.9) + '" font-size="' + fsk + '" text-anchor="middle"' + sf + '>' + zahl(xv) + '</text>');
       }
       for(var j = Math.ceil(ymin / sy - 1e-9); j * sy <= ymax + 1e-9; j++){
         var yv = j * sy, Y = py(yv);
         ticks.push('M' + (achseX - 0.8) + ' ' + Y.toFixed(2) + 'h1.6');
         if(Math.abs(yv) < 1e-9 && Math.abs(achseY - Y) < 0.01) continue;
-        o.push('<text x="' + (achseX - 2) + '" y="' + (Y + 0.95).toFixed(2) + '" font-size="' + fsk + '" text-anchor="end">' + zahl(yv) + '</text>');
+        if(skala) o.push('<text x="' + (achseX - 2) + '" y="' + (Y + 0.95).toFixed(2) + '" font-size="' + fsk + '" text-anchor="end"' + sf + '>' + zahl(yv) + '</text>');
       }
       o.push('<path d="' + ticks.join('') + '" stroke="var(--tinte)" stroke-width="0.25"/>');
     }
@@ -2825,7 +2831,9 @@ var Diagramm = (function(){
       o.push('<text x="' + (achseX + 2).toFixed(2) + '" y="' + (Y1 - 2.4) + '" font-size="' + fs + '"' + af + '>' + beschriftung(yName, yEinheit) + '</text>');
     }
     if(Math.abs(achseX - X0) < 0.01 && (quant ? (xmin === 0 && ymin === 0) : !marken.some(function(m){ return m.achse === 'y' && Math.abs(py(m.wert) - achseY) < 2.5; }))){
-      o.push('<text x="' + (X0 - 1.4) + '" y="' + (achseY + 3.6).toFixed(2) + '" font-size="' + fsk + '" text-anchor="end">0</text>');
+      // Die 0 im Ursprung gehört bei Diagrammen mit Skala zu den Zahlen der Skala
+      var null0 = quant && b.skalaNurLoesung;
+      if(!null0 || loesung) o.push('<text x="' + (X0 - 1.4) + '" y="' + (achseY + 3.6).toFixed(2) + '" font-size="' + fsk + '" text-anchor="end"' + (null0 ? ' fill="var(--loesung)"' : '') + '>0</text>');
     }
 
     // Qualitativ: Abschnitte, Markierungen, Verläufe
@@ -2979,7 +2987,7 @@ TYPEN.diagramm = {
       y:{name:'s', einheit:'m', min:0, max:50, schritt:10},
       unterteilung:2, gitter:true,
       funktionen:'s = 5*t | Körper A', punkte:'', ausgleich:'keine',
-      nurGraph:false, nurPunkte:false, achsenNurLoesung:false, ablesen:'', karo:false,
+      nurGraph:false, nurPunkte:false, achsenNurLoesung:false, skalaNurLoesung:false, ablesen:'', karo:false,
       breite:60, hoehe:5.5, ausrichtung:'mitte', textDaneben:true, html:'', beschriftungAn:false, beschriftung:''
     };
   },
@@ -3203,6 +3211,7 @@ function diagrammQuantPanel(b, p){
   p.haken('Graphen nur in der Lösungsfassung', 'nurGraph');
   p.haken('Messpunkte nur in der Lösungsfassung', 'nurPunkte');
   p.haken('Achsenbeschriftung nur in der Lösungsfassung (Schüler beschriften selbst)', 'achsenNurLoesung');
+  p.haken('Zahlen an den Achsen nur in der Lösungsfassung (Schüler wählen die Einteilung)', 'skalaNurLoesung');
   var hl = neu('textarea', {rows:2, spellcheck:'false', placeholder:'5; 6'});
   hl.value = b.ablesen || '';
   hl.addEventListener('input', function(){ b.ablesen = hl.value; p.neuZeichnen(); });
