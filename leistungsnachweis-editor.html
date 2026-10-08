@@ -113,6 +113,10 @@ REGEL 6 – DIAGRAMME
   5-mm-Kästchen wie das Heft und die Karofelder, auch wenn die Achsen verschieden
   skaliert sind. Bereich, Schritt und Unterteilung so wählen, dass die Werte auf
   Gitterlinien liegen und das Diagramm gut auf die Seite passt.
+• Sollen die Schüler die Achsen beschriften, bekommt das Diagramm
+  "achsenNurLoesung": true: Größe und Einheit an den Achsen stehen dann nur in der
+  Musterlösung, die Zahlen der Skala bleiben. Im Auftrag nicht direkt danach fragen,
+  sondern z. B. „Vervollständige das t-s-Diagramm mithilfe der Messwerte.“
 
 REGEL 7 – MUSTERLÖSUNG
 • Fachlich korrekt und vollständig. Sie muss der Prüfung durch die
@@ -186,7 +190,8 @@ Jeder Baustein hat "id" (eindeutig, z. B. "b1"), "typ" und je nach Typ diese Fel
                "gerade", "ursprung"), nurGraph bzw. nurPunkte true = nur in der Lösung,
                ablesen (Hilfslinien der Lösung), karo (true = quadratische 5-mm-Kästchen
                wie Karopapier; breite und hoehe ergeben sich dann aus dem Gitter, sonst
-               breite in % und hoehe in cm), ausrichtung ("mitte"; "links" oder "rechts"
+               breite in % und hoehe in cm), achsenNurLoesung (true = Größe und Einheit
+               an den Achsen nur in der Lösung), ausrichtung ("mitte"; "links" oder "rechts"
                mit textDaneben true und html = Text neben dem Diagramm), textDaneben.
                Qualitative Diagramme: TYPEN.diagramm.neu().
   Weitere Bausteine (gitter, raetsel, symtab): siehe TYPEN.<typ>.neu() im Quelltext.
@@ -2812,8 +2817,13 @@ var Diagramm = (function(){
     // Achsen
     o.push('<path d="M' + (X0 - (quant ? 0 : 1)) + ' ' + achseY.toFixed(2) + 'H' + (X1 + 3.5) + '" stroke="var(--tinte)" stroke-width="0.35" marker-end="url(#p' + b.id + ')"/>');
     o.push('<path d="M' + achseX.toFixed(2) + ' ' + (Y0 + (quant ? 0 : 1)) + 'V' + (Y1 - 3.5) + '" stroke="var(--tinte)" stroke-width="0.35" marker-end="url(#p' + b.id + ')"/>');
-    o.push('<text x="' + (X1 + 3.5) + '" y="' + (achseY + 4.2).toFixed(2) + '" font-size="' + fs + '" text-anchor="end">' + beschriftung(xName, xEinheit) + '</text>');
-    o.push('<text x="' + (achseX + 2).toFixed(2) + '" y="' + (Y1 - 2.4) + '" font-size="' + fs + '">' + beschriftung(yName, yEinheit) + '</text>');
+    // Achsenbeschriftung: auf Wunsch nur in der Lösung (in Lösungsfarbe) – dann beschriften die Schüler die Achsen selbst.
+    // Die Zahlen der Skala bleiben in beiden Fassungen gleich, auch dort, wo die Beschriftung Platz braucht.
+    if(!b.achsenNurLoesung || loesung){
+      var af = b.achsenNurLoesung ? ' fill="var(--loesung)" class="achse-loesung"' : '';
+      o.push('<text x="' + (X1 + 3.5) + '" y="' + (achseY + 4.2).toFixed(2) + '" font-size="' + fs + '" text-anchor="end"' + af + '>' + beschriftung(xName, xEinheit) + '</text>');
+      o.push('<text x="' + (achseX + 2).toFixed(2) + '" y="' + (Y1 - 2.4) + '" font-size="' + fs + '"' + af + '>' + beschriftung(yName, yEinheit) + '</text>');
+    }
     if(Math.abs(achseX - X0) < 0.01 && (quant ? (xmin === 0 && ymin === 0) : !marken.some(function(m){ return m.achse === 'y' && Math.abs(py(m.wert) - achseY) < 2.5; }))){
       o.push('<text x="' + (X0 - 1.4) + '" y="' + (achseY + 3.6).toFixed(2) + '" font-size="' + fsk + '" text-anchor="end">0</text>');
     }
@@ -2969,7 +2979,7 @@ TYPEN.diagramm = {
       y:{name:'s', einheit:'m', min:0, max:50, schritt:10},
       unterteilung:2, gitter:true,
       funktionen:'s = 5*t | Körper A', punkte:'', ausgleich:'keine',
-      nurGraph:false, nurPunkte:false, ablesen:'', karo:false,
+      nurGraph:false, nurPunkte:false, achsenNurLoesung:false, ablesen:'', karo:false,
       breite:60, hoehe:5.5, ausrichtung:'mitte', textDaneben:true, html:'', beschriftungAn:false, beschriftung:''
     };
   },
@@ -3034,6 +3044,7 @@ function diagrammQualPanel(b, p){
   p.feld('Ablese-Markierungen (eine pro Zeile)', [mk]);
   p.hinweis('<code>y = 4 | N_0/2</code> zieht eine gestrichelte Linie von der Hochachse zur ersten Kurve. Mit <code>| T_½</code> geht sie weiter zur Rechtsachse und wird dort beschriftet. <code>x = 6 | U_S</code> markiert eine Stelle auf der Rechtsachse.');
   p.haken('Graph nur in der Lösungsfassung (Schüler zeichnen selbst)', 'nurGraph');
+  p.haken('Achsenbeschriftung nur in der Lösungsfassung (Schüler beschriften selbst)', 'achsenNurLoesung');
 }
 
 function bewegungPanel(b, p){
@@ -3191,6 +3202,7 @@ function diagrammQuantPanel(b, p){
   p.abschnitt('Lösung');
   p.haken('Graphen nur in der Lösungsfassung', 'nurGraph');
   p.haken('Messpunkte nur in der Lösungsfassung', 'nurPunkte');
+  p.haken('Achsenbeschriftung nur in der Lösungsfassung (Schüler beschriften selbst)', 'achsenNurLoesung');
   var hl = neu('textarea', {rows:2, spellcheck:'false', placeholder:'5; 6'});
   hl.value = b.ablesen || '';
   hl.addEventListener('input', function(){ b.ablesen = hl.value; p.neuZeichnen(); });
